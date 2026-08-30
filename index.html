@@ -433,6 +433,36 @@ body{
   100%{ opacity: .9; transform: translateY(112vh) rotate(760deg); }
 }
 
+/* ---------- レベル選択ボタン ---------- */
+.btn .lv-tag{
+  display: block; font-size: .66rem; letter-spacing: .14em;
+  opacity: .85; margin-bottom: 3px;
+}
+.btn.sun{
+  background: var(--yellow); color: var(--ink);
+  box-shadow: 0 6px 0 var(--yellow-deep), 0 12px 20px rgba(224,168,46,.24);
+}
+.btn.sun:active{ box-shadow: 0 2px 0 var(--yellow-deep); }
+
+/* ---------- じゅくごの 2マス ---------- */
+.pairwrap{
+  position: relative; display: inline-flex; gap: .12em;
+  vertical-align: -.62em; margin: 0 .14em;
+}
+.pairwrap .blank{ vertical-align: 0; margin: 0; }
+.pair-yomi{
+  position: absolute; top: -1.05em; left: 50%; transform: translateX(-50%);
+  font-family: var(--f-body); font-weight: 900;
+  font-size: .44em; white-space: nowrap; color: var(--mint-deep);
+  background: var(--mint-soft); padding: 3px 11px; border-radius: 999px;
+  box-shadow: 0 2px 0 rgba(63,174,147,.18);
+  z-index: 1;
+}
+.blank.waiting{
+  background: var(--milk-deep); border: 3px dashed var(--line);
+  color: var(--ink-soft); animation: none;
+}
+
 /* ---------- かんじの いちらん（おすと おおきくなる） ---------- */
 .rv-hint{
   margin: -6px 0 12px; font-size: .74rem; font-weight: 700;
@@ -630,7 +660,12 @@ body{
       <p class="stamp-note" id="home-stamp-note"></p>
     </div>
 
-    <button class="btn" id="btn-start">クイズ スタート！</button>
+    <button class="btn" id="btn-start" type="button">
+      <span class="lv-tag">レベル 1</span>1もじの もんだい
+    </button>
+    <button class="btn sun" id="btn-start2" type="button">
+      <span class="lv-tag">レベル 2</span>じゅくごの もんだい
+    </button>
     <div class="btn-row">
       <button class="btn mint" id="btn-gallery">ごほうび カード</button>
       <button class="btn lav" id="btn-review">にがてな かんじ</button>
@@ -769,6 +804,41 @@ const QUESTIONS = [
   { k:"転", yomi:"ころ", grade:3, pre:"<ruby>石<rt>いし</rt></ruby>に つまずいて ", post:"ぶ。", wrong:["軽","動","運"] },
   { k:"買", yomi:"か", grade:2, pre:"お<ruby>店<rt>みせ</rt></ruby>で パンを ", post:"う。", wrong:["貝","員","売"] }
 ];
+
+/* ============================================================
+   1-2. レベル2 じゅくごの もんだい
+        w      : こたえの じゅくご（2もじ）
+        yomi   : じゅくご ぜんたいの よみ
+        pre/post: ぶんの まえ半分・うしろ半分（HTMLタグ可）
+        wrong1 : 1もじめの まちがえやすい 3つ
+        wrong2 : 2もじめの まちがえやすい 3つ
+   ============================================================ */
+const JUKUGO = [
+  { w:"学校", yomi:"がっこう", pre:"<ruby>毎日<rt>まいにち</rt></ruby> ", post:" へ かよう。", wrong1:["字","科","業"], wrong2:["交","木","村"] },
+  { w:"先生", yomi:"せんせい", pre:"やさしい ", post:" に あいさつする。", wrong1:["光","兄","矢"], wrong2:["牛","主","王"] },
+  { w:"天気", yomi:"てんき", pre:"<ruby>今日<rt>きょう</rt></ruby>は いい ", post:"だ。", wrong1:["大","犬","矢"], wrong2:["汽","元","空"] },
+  { w:"音楽", yomi:"おんがく", pre:"", post:"の <ruby>時間<rt>じかん</rt></ruby>が すきだ。", wrong1:["立","言","章"], wrong2:["薬","業","東"] },
+  { w:"電車", yomi:"でんしゃ", pre:"", post:" に のって <ruby>出<rt>で</rt></ruby>かける。", wrong1:["雲","雪","雨"], wrong2:["東","事","直"] },
+  { w:"読書", yomi:"どくしょ", pre:"<ruby>雨<rt>あめ</rt></ruby>の <ruby>日<rt>ひ</rt></ruby>は ", post:"を する。", wrong1:["語","話","記"], wrong2:["昼","者","画"] },
+  { w:"教室", yomi:"きょうしつ", pre:"", post:"の まどを あける。", wrong1:["数","対","放"], wrong2:["空","屋","局"] },
+  { w:"公園", yomi:"こうえん", pre:"", post:"で <ruby>友<rt>とも</rt></ruby>だちと <ruby>遊<rt>あそ</rt></ruby>ぶ。", wrong1:["谷","分","会"], wrong2:["遠","国","図"] },
+  { w:"家族", yomi:"かぞく", pre:"", post:" みんなで <ruby>食事<rt>しょくじ</rt></ruby>を する。", wrong1:["室","安","宿"], wrong2:["旅","遊","放"] },
+  { w:"交通", yomi:"こうつう", pre:"", post:"ルールを <ruby>守<rt>まも</rt></ruby>る。", wrong1:["校","文","父"], wrong2:["道","送","週"] },
+  { w:"練習", yomi:"れんしゅう", pre:"<ruby>毎日<rt>まいにち</rt></ruby> ピアノを ", post:"する。", wrong1:["緑","線","紙"], wrong2:["集","週","者"] },
+  { w:"病院", yomi:"びょういん", pre:"ねつが でたので ", post:" へ <ruby>行<rt>い</rt></ruby>く。", wrong1:["部","医","度"], wrong2:["陽","階","都"] },
+  { w:"昼食", yomi:"ちゅうしょく", pre:"", post:"に カレーを たべる。", wrong1:["書","春","暑"], wrong2:["飲","館","全"] },
+  { w:"手紙", yomi:"てがみ", pre:"おばあちゃんに ", post:"を <ruby>送<rt>おく</rt></ruby>る。", wrong1:["毛","才","午"], wrong2:["糸","級","線"] },
+  { w:"反対", yomi:"はんたい", pre:"", post:"の <ruby>方向<rt>ほうこう</rt></ruby>へ <ruby>歩<rt>ある</rt></ruby>く。", wrong1:["友","板","皮"], wrong2:["村","待","数"] },
+  { w:"屋根", yomi:"やね", pre:"<ruby>家<rt>いえ</rt></ruby>の ", post:"に <ruby>雪<rt>ゆき</rt></ruby>が つもる。", wrong1:["室","局","店"], wrong2:["板","相","植"] },
+  { w:"温度", yomi:"おんど", pre:"おふろの ", post:"を <ruby>調<rt>しら</rt></ruby>べる。", wrong1:["湯","泳","池"], wrong2:["庭","広","店"] },
+  { w:"動物", yomi:"どうぶつ", pre:"", post:"えんで パンダを <ruby>見<rt>み</rt></ruby>る。", wrong1:["重","運","助"], wrong2:["牛","持","拾"] },
+  { w:"遠足", yomi:"えんそく", pre:"<ruby>明日<rt>あした</rt></ruby>は <ruby>楽<rt>たの</rt></ruby>しみな ", post:"だ。", wrong1:["園","送","通"], wrong2:["走","定","星"] },
+  { w:"大切", yomi:"たいせつ", pre:"この <ruby>本<rt>ほん</rt></ruby>は とても ", post:"だ。", wrong1:["犬","太","天"], wrong2:["分","助","列"] },
+  { w:"商店", yomi:"しょうてん", pre:"<ruby>駅前<rt>えきまえ</rt></ruby>の ", post:"がいを <ruby>歩<rt>ある</rt></ruby>く。", wrong1:["章","高","品"], wrong2:["度","広","庭"] },
+  { w:"名前", yomi:"なまえ", pre:"ノートに ", post:"を <ruby>書<rt>か</rt></ruby>く。", wrong1:["多","石","右"], wrong2:["後","首","道"] },
+  { w:"全部", yomi:"ぜんぶ", pre:"<ruby>宿題<rt>しゅくだい</rt></ruby>を ", post:" おわらせた。", wrong1:["金","会","王"], wrong2:["都","陽","院"] },
+  { w:"昔話", yomi:"むかしばなし", pre:"おばあちゃんの ", post:"を きく。", wrong1:["苦","草","者"], wrong2:["語","読","記"] }
+];
 /* ごほうびカード（5スタンプで1まい） */
 const REWARDS = [
   { name:"しろねこ ちゃん", bg:"#FFF3D4", svg:`<svg viewBox="0 0 100 100"><g><path d="M22 34 L26 12 L42 26 Z" fill="#fff" stroke="#FF9EC4" stroke-width="3" stroke-linejoin="round"/><path d="M78 34 L74 12 L58 26 Z" fill="#fff" stroke="#FF9EC4" stroke-width="3" stroke-linejoin="round"/><ellipse cx="50" cy="56" rx="32" ry="28" fill="#fff" stroke="#FF9EC4" stroke-width="3"/><circle cx="39" cy="52" r="4" fill="#6A4658"/><circle cx="61" cy="52" r="4" fill="#6A4658"/><path d="M50 60 l-4 4 h8 z" fill="#FF9EC4"/><path d="M50 64 q-6 7 -11 2 M50 64 q6 7 11 2" stroke="#6A4658" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="30" cy="62" r="5" fill="#FFDCEB"/><circle cx="70" cy="62" r="5" fill="#FFDCEB"/></g></svg>` },
@@ -796,7 +866,7 @@ const STAMP_SVGS = [
    2. きおく（LocalStorage）
    ============================================================ */
 const KEY = "hanamaru-kanji-v1";
-const blankSave = () => ({ stats:{}, stamps:0, clears:0, furigana:true });
+const blankSave = () => ({ stats:{}, wstats:{}, stamps:0, clears:0, furigana:true });
 
 function load(){
   try{
@@ -814,6 +884,10 @@ function statOf(k){
   if(!DB.stats[k]) DB.stats[k] = { streak:0, wrong:0, seen:0, mastered:false, lastWrong:0 };
   return DB.stats[k];
 }
+function wstatOf(w){
+  if(!DB.wstats[w]) DB.wstats[w] = { streak:0, wrong:0, seen:0, mastered:false, lastWrong:0 };
+  return DB.wstats[w];
+}
 const unlockedCount = () => Math.min(REWARDS.length, Math.floor(DB.stamps / 5));
 
 /* ============================================================
@@ -825,24 +899,30 @@ const unlockedCount = () => Math.min(REWARDS.length, Math.floor(DB.stamps / 5));
    ============================================================ */
 const shuffle = a => { const b=a.slice(); for(let i=b.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [b[i],b[j]]=[b[j],b[i]]; } return b; };
 
-function buildSet(size = 10){
+function pickSet(list, stats, keyOf, size){
   const wrongPool = [], freshPool = [], normalPool = [], masteredPool = [];
-  for(const q of QUESTIONS){
-    const s = DB.stats[q.k];
-    if(s && s.mastered)      masteredPool.push(q);
-    else if(s && s.wrong > 0) wrongPool.push(q);
+  for(const q of list){
+    const s = stats[keyOf(q)];
+    if(s && s.mastered)         masteredPool.push(q);
+    else if(s && s.wrong > 0)   wrongPool.push(q);
     else if(!s || s.seen === 0) freshPool.push(q);
-    else                      normalPool.push(q);
+    else                        normalPool.push(q);
   }
-  wrongPool.sort((a,b) => (DB.stats[b.k].wrong - DB.stats[a.k].wrong) || (DB.stats[b.k].lastWrong - DB.stats[a.k].lastWrong));
-
+  wrongPool.sort((a,b) => (stats[keyOf(b)].wrong - stats[keyOf(a)].wrong)
+                       || (stats[keyOf(b)].lastWrong - stats[keyOf(a)].lastWrong));
   const picked = [];
   const take = arr => { for(const q of arr){ if(picked.length >= size) return; picked.push(q); } };
-  take(wrongPool);                       // まちがえた かんじを さいゆうせん
+  take(wrongPool);                       // まちがえた もんだいを さいゆうせん
   take(shuffle(freshPool));
   take(shuffle(normalPool));
   take(shuffle(masteredPool));           // それでも たりなければ クリアずみも もどす
   return shuffle(picked);
+}
+
+function buildSet(size = 10){
+  return LEVEL === 1
+    ? pickSet(QUESTIONS, DB.stats,  q => q.k, size)
+    : pickSet(JUKUGO,    DB.wstats, q => q.w, size);
 }
 
 /* ============================================================
@@ -968,8 +1048,10 @@ function renderStamps(el, noteEl, pressIndex = -1){
    8. クイズ ほんたい
    ============================================================ */
 let SET = [], idx = 0, correctCount = 0, missed = [], locked = false;
+let LEVEL = 1, subIdx = 0, subResult = [null, null];
 
-function startQuiz(){
+function startQuiz(level){
+  if(level) LEVEL = level;
   SET = buildSet(10);
   idx = 0; correctCount = 0; missed = []; locked = false;
   show("s-quiz");
@@ -978,73 +1060,139 @@ function startQuiz(){
 
 function renderQuestion(){
   const q = SET[idx];
-  $("#q-count").textContent = `${idx + 1} / ${SET.length}`;
+  $("#q-count").textContent = `Lv.${LEVEL}　${idx + 1} / ${SET.length}`;
   $("#q-bar").style.width = ((idx) / SET.length * 100) + "%";
   $("#q-hearts").textContent = "♥".repeat(Math.max(0, correctCount)).slice(0, 10);
   $("#q-hearts").style.color = "#FF9EC4";
 
-  $("#q-sentence").innerHTML =
-    q.pre +
-    `<span class="blank" id="blank"><span class="yomi">${q.yomi}</span>?</span>` +
-    q.post;
+  if(LEVEL === 1){
+    $("#q-label").textContent = "□に はいる かんじは？";
+    $("#q-sentence").innerHTML =
+      q.pre +
+      `<span class="blank" id="blank"><span class="yomi">${q.yomi}</span>?</span>` +
+      q.post;
+    renderChoices(q.k, [q.k, ...q.wrong], q);
+  }else{
+    subIdx = 0; subResult = [null, null];
+    $("#q-sentence").innerHTML =
+      q.pre +
+      `<span class="pairwrap"><span class="pair-yomi">${q.yomi}</span>` +
+      `<span class="blank" id="b0">?</span><span class="blank" id="b1">?</span></span>` +
+      q.post;
+    renderSub(q);
+  }
+  applyFurigana();
+  locked = false;
+}
 
-  const opts = shuffle([q.k, ...q.wrong]);
+/* レベル2: いま きいている ほうの マスを ひからせる */
+function renderSub(q){
+  $("#q-label").textContent = subIdx === 0 ? "1つめの かんじは？" : "2つめの かんじは？";
+  for(let i = 0; i < 2; i++){
+    const el = $("#b" + i);
+    if(subResult[i] === null) el.classList.toggle("waiting", subIdx !== i);
+    else                      el.classList.remove("waiting");
+  }
+  const target = q.w[subIdx];
+  renderChoices(target, [target, ...(subIdx === 0 ? q.wrong1 : q.wrong2)], q);
+}
+
+function renderChoices(target, opts, q){
   const box = $("#q-choices");
   box.innerHTML = "";
-  opts.forEach(ch => {
+  shuffle(opts).forEach(ch => {
     const b = document.createElement("button");
     b.className = "choice";
     b.type = "button";
     b.textContent = ch;
     b.setAttribute("aria-label", ch);
-    b.addEventListener("click", () => answer(b, ch, q));
+    b.addEventListener("click", () => answer(b, ch, q, target));
     box.appendChild(b);
   });
-  applyFurigana();
   locked = false;
 }
 
-function answer(btn, choice, q){
-  if(locked) return;
-  locked = true;
-  const s = statOf(q.k);
-  s.seen++;
-
-  const blank = $("#blank");
-  const ok = (choice === q.k);
-
+function markChoices(target, btn){
   $$("#q-choices .choice").forEach(b => {
     b.disabled = true;
-    if(b.textContent === q.k) b.classList.add("correct");
-    else if(b === btn)        b.classList.add("wrong");
-    else                      b.classList.add("dim");
+    if(b.textContent === target) b.classList.add("correct");
+    else if(b === btn)           b.classList.add("wrong");
+    else                         b.classList.add("dim");
   });
+}
 
-  blank.innerHTML = `<span class="yomi">${q.yomi}</span>${q.k}`;
-  blank.classList.add(ok ? "done" : "miss");
-
+/* 1もじぶんの せいかい・ふせいかいを きろくする */
+function recordChar(k, ok, example){
+  const s = statOf(k);
+  s.seen++;
   if(ok){
-    correctCount++;
     s.streak++;
     if(s.streak >= 3) s.mastered = true;
-    seCorrect();
-    judge("せいかい！", "yes");
   }else{
     s.streak = 0;
     s.wrong++;
     s.mastered = false;
     s.lastWrong = Date.now();
-    if(!missed.some(m => m.k === q.k)) missed.push(q);
-    seWrong();
-    judge("おしい！", "no");
+    if(!missed.some(m => m.k === k)) missed.push(example);
   }
+}
+
+function answer(btn, choice, q, target){
+  if(locked) return;
+  locked = true;
+  const ok = (choice === target);
+  markChoices(target, btn);
+
+  if(LEVEL === 1){
+    recordChar(q.k, ok, q);
+    const blank = $("#blank");
+    blank.innerHTML = `<span class="yomi">${q.yomi}</span>${q.k}`;
+    blank.classList.add(ok ? "done" : "miss");
+    if(ok) correctCount++;
+    ok ? seCorrect() : seWrong();
+    judge(ok ? "せいかい！" : "おしい！", ok ? "yes" : "no");
+    save();
+    setTimeout(() => {
+      idx++;
+      if(idx < SET.length) renderQuestion(); else finish();
+    }, ok ? 900 : 1500);
+    return;
+  }
+
+  /* ---- レベル2 ---- */
+  recordChar(target, ok, { k: target, yomi: q.yomi, pre: q.pre, post: q.post, word: q.w });
+  const el = $("#b" + subIdx);
+  el.classList.remove("waiting");
+  el.textContent = target;
+  el.classList.add(ok ? "done" : "miss");
+  subResult[subIdx] = ok;
+  ok ? seCorrect() : seWrong();
   save();
 
+  if(subIdx === 0){
+    setTimeout(() => { subIdx = 1; renderSub(q); }, ok ? 800 : 1300);
+    return;
+  }
+
+  const both = subResult[0] && subResult[1];
+  const ws = wstatOf(q.w);
+  ws.seen++;
+  if(both){
+    correctCount++;
+    ws.streak++;
+    if(ws.streak >= 3) ws.mastered = true;
+  }else{
+    ws.streak = 0;
+    ws.wrong++;
+    ws.mastered = false;
+    ws.lastWrong = Date.now();
+  }
+  save();
+  judge(both ? "せいかい！" : "おしい！", both ? "yes" : "no");
   setTimeout(() => {
     idx++;
-    if(idx < SET.length) renderQuestion();
-    else finish();
-  }, ok ? 900 : 1500);
+    if(idx < SET.length) renderQuestion(); else finish();
+  }, both ? 1000 : 1600);
 }
 
 function judge(text, kind){
@@ -1058,6 +1206,27 @@ function judge(text, kind){
 /* ============================================================
    9. けっか がめん
    ============================================================ */
+/* れいぶんの HTML を つくる（じゅくごなら その1文字だけ いろを つける） */
+function exampleHTML(e, color){
+  if(e.word){
+    const body = e.word.split("").map(c =>
+      c === e.k ? `<b style="color:${color}">${c}</b>` : c).join("");
+    return e.pre + body + e.post;
+  }
+  return `${e.pre}<b style="color:${color}">${e.k}</b>${e.post}`;
+}
+function yomiLabel(e){
+  return e.word ? `じゅくご：${e.word}（${e.yomi}）` : `よみ：${e.yomi}`;
+}
+/* にがてな かんじ の 拡大表示で つかう れい */
+function exampleFor(k){
+  const q = QUESTIONS.find(x => x.k === k);
+  if(q) return { k, yomi: q.yomi, pre: q.pre, post: q.post };
+  const j = JUKUGO.find(x => x.w.indexOf(k) !== -1);
+  if(j) return { k, yomi: j.yomi, pre: j.pre, post: j.post, word: j.w };
+  return null;
+}
+
 function finish(){
   $("#q-bar").style.width = "100%";
 
@@ -1101,8 +1270,8 @@ function finish(){
            <div class="pr-item">
              <div class="masu"><span>${q.k}</span></div>
              <div class="pr-meta">
-               <span class="pr-yomi">よみ：${q.yomi}</span>
-               <p class="pr-ex">${q.pre}<b style="color:var(--pink-deep)">${q.k}</b>${q.post}</p>
+               <span class="pr-yomi">${yomiLabel(q)}</span>
+               <p class="pr-ex">${exampleHTML(q, "var(--pink-deep)")}</p>
              </div>
            </div>`).join("")}
        </div>`;
@@ -1206,7 +1375,7 @@ let chipOrder = [], zoomIndex = -1;
 function openZoom(k){
   const i = chipOrder.indexOf(k);
   zoomIndex = (i === -1) ? -1 : i;
-  const q = QUESTIONS.find(x => x.k === k);
+  const q = exampleFor(k);
   const s = DB.stats[k] || {};
   const done = !!s.mastered;
   const hasNav = chipOrder.length > 1 && zoomIndex !== -1;
@@ -1216,8 +1385,8 @@ function openZoom(k){
        <button class="zoom-close" id="zoom-close" type="button" aria-label="とじる">✕</button>
        <div class="masu big ${done ? "done" : ""}"><span>${k}</span></div>
        <div class="zoom-meta">
-         <span class="pr-yomi ${done ? "done" : ""}">よみ：${q ? q.yomi : "－"}</span>
-         ${q ? `<p class="pr-ex">${q.pre}<b>${k}</b>${q.post}</p>` : ""}
+         <span class="pr-yomi ${done ? "done" : ""}">${q ? yomiLabel(q) : "よみ：－"}</span>
+         ${q ? `<p class="pr-ex">${exampleHTML(q, done ? "var(--mint-deep)" : "var(--pink-deep)")}</p>` : ""}
          <p class="zoom-state">${done ? "3かい つづけて せいかい！ クリアずみ" : `まちがえた かいすう：${s.wrong || 0}かい`}</p>
        </div>
        ${hasNav ? `<div class="zoom-nav">
@@ -1267,8 +1436,9 @@ function applyFurigana(){
 /* ============================================================
    12. ボタン
    ============================================================ */
-$("#btn-start").addEventListener("click", () => { seTap(); startQuiz(); });
-$("#btn-again").addEventListener("click", () => { seTap(); startQuiz(); });
+$("#btn-start").addEventListener("click",  () => { seTap(); startQuiz(1); });
+$("#btn-start2").addEventListener("click", () => { seTap(); startQuiz(2); });
+$("#btn-again").addEventListener("click", () => { seTap(); startQuiz(LEVEL); });
 $("#btn-quit").addEventListener("click",  () => { seTap(); goHome(); });
 $("#btn-ruby").addEventListener("click",  () => { seTap(); DB.furigana = (DB.furigana === false); save(); applyFurigana(); });
 $("#btn-home").addEventListener("click",  () => { seTap(); goHome(); });
