@@ -1,0 +1,1098 @@
+<title>はなまるかんじ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yusei+Magic&family=Zen+Maru+Gothic:wght@400;500;700;900&family=Klee+One:wght@400;600&display=swap">
+
+<style>
+/* ============================================================
+   はなまるかんじ
+   単一テーマ（ふんわりパステルの世界）を意図的に採用。
+   ダーク環境でも同じ世界観を保つため、色は全てトークンで明示。
+   ============================================================ */
+:root{
+  color-scheme: light;
+
+  --milk:      #FFF7FB;
+  --milk-deep: #FFEDF5;
+  --card:      #FFFFFF;
+
+  --pink:      #FF9EC4;
+  --pink-deep: #E8619A;
+  --pink-soft: #FFDCEB;
+
+  --mint:      #7FD9C0;
+  --mint-deep: #3FAE93;
+  --mint-soft: #DAF6EE;
+
+  --yellow:      #FFD66B;
+  --yellow-deep: #E0A82E;
+  --yellow-soft: #FFF3D4;
+
+  --lav:      #B79BEF;
+  --lav-deep: #8360D6;
+  --lav-soft: #EEE6FF;
+
+  /* ニュートラルはピンク寄りに振ったすもも色。純グレーは使わない */
+  --ink:       #6A4658;
+  --ink-soft:  #9C7B8B;
+  --line:      #F3DCE7;
+
+  --r-lg: 28px;
+  --r-md: 20px;
+  --r-sm: 14px;
+
+  --f-display: 'Yusei Magic', 'Zen Maru Gothic', system-ui, sans-serif;
+  --f-body: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', system-ui, sans-serif;
+  --f-kanji: 'Klee One', 'Zen Maru Gothic', serif;
+}
+:root[data-theme="dark"]{ color-scheme: light; }
+
+*{ box-sizing: border-box; }
+
+body{
+  margin:0;
+  background: var(--milk);
+  background-image:
+    radial-gradient(120% 80% at 10% 0%,  var(--pink-soft) 0%, transparent 55%),
+    radial-gradient(110% 70% at 95% 8%,  var(--mint-soft) 0%, transparent 50%),
+    radial-gradient(120% 90% at 50% 105%, var(--yellow-soft) 0%, transparent 55%);
+  background-attachment: fixed;
+  font-family: var(--f-body);
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+
+/* ---------- きらきら背景 ---------- */
+#sparkles{
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  overflow: hidden;
+}
+.sp{
+  position: absolute;
+  font-size: 18px;
+  opacity: 0;
+  animation: twinkle 5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+@keyframes twinkle{
+  0%   { opacity: 0;   transform: translateY(6px) scale(.5) rotate(0deg); }
+  35%  { opacity: .85; transform: translateY(-4px) scale(1) rotate(12deg); }
+  70%  { opacity: .35; transform: translateY(-14px) scale(.9) rotate(-8deg); }
+  100% { opacity: 0;   transform: translateY(-24px) scale(.5) rotate(0deg); }
+}
+
+/* ---------- 画面のわく ---------- */
+.stage{
+  position: relative; z-index: 1;
+  width: 100%; max-width: 430px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  padding: 18px 16px 40px;
+  display: flex; flex-direction: column; gap: 18px;
+}
+@media (min-width: 800px){
+  .stage{
+    margin: 24px auto;
+    min-height: auto;
+    background: rgba(255,255,255,.55);
+    border: 3px solid var(--card);
+    border-radius: 40px;
+    box-shadow: 0 24px 60px rgba(232,97,154,.16);
+    padding: 24px 20px 36px;
+  }
+}
+
+.screen{ display: none; flex-direction: column; gap: 18px; }
+.screen.on{ display: flex; animation: popin .38s cubic-bezier(.2,1.5,.4,1) both; }
+@keyframes popin{
+  from{ opacity: 0; transform: translateY(14px) scale(.96); }
+  to  { opacity: 1; transform: none; }
+}
+
+/* ---------- ロゴ ---------- */
+.logo{ text-align: center; padding-top: 8px; }
+.logo h1{
+  font-family: var(--f-display);
+  font-size: clamp(2.1rem, 11vw, 2.9rem);
+  margin: 0;
+  line-height: 1.15;
+  text-wrap: balance;
+  color: var(--pink-deep);
+  text-shadow:
+     3px 3px 0 var(--card),
+    -2px -2px 0 var(--card),
+     0 7px 0 var(--pink-soft);
+  letter-spacing: .02em;
+}
+.logo .sub{
+  margin: 12px 0 0;
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  letter-spacing: .12em;
+}
+.logo .grade-badge{
+  display: inline-block;
+  margin-top: 12px;
+  background: var(--mint);
+  color: #fff;
+  font-weight: 900;
+  font-size: .78rem;
+  padding: 7px 16px;
+  border-radius: 999px;
+  box-shadow: 0 4px 0 var(--mint-deep);
+  letter-spacing: .06em;
+}
+
+/* ---------- カード ---------- */
+.card{
+  background: var(--card);
+  border-radius: var(--r-lg);
+  padding: 20px 18px;
+  box-shadow: 0 8px 0 var(--line), 0 16px 30px rgba(232,97,154,.12);
+}
+.card-title{
+  margin: 0 0 14px;
+  font-size: .95rem;
+  font-weight: 900;
+  color: var(--ink);
+  display: flex; align-items: center; gap: 8px;
+}
+.card-title .dot{
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--pink); flex: none;
+  box-shadow: 0 0 0 4px var(--pink-soft);
+}
+
+/* ---------- ぷっくりボタン ---------- */
+.btn{
+  font-family: var(--f-body);
+  font-weight: 900;
+  border: none;
+  border-radius: var(--r-md);
+  padding: 17px 20px;
+  font-size: 1.05rem;
+  color: #fff;
+  background: var(--pink);
+  box-shadow: 0 6px 0 var(--pink-deep), 0 12px 20px rgba(232,97,154,.28);
+  cursor: pointer;
+  transition: transform .12s cubic-bezier(.2,1.6,.4,1), box-shadow .12s ease, filter .12s ease;
+  width: 100%;
+  letter-spacing: .04em;
+}
+.btn:hover{ transform: translateY(-3px) scale(1.02); filter: brightness(1.04); }
+.btn:active{ transform: translateY(4px) scale(.98); box-shadow: 0 2px 0 var(--pink-deep); }
+.btn:focus-visible{ outline: 4px solid var(--lav); outline-offset: 3px; }
+.btn.mint{ background: var(--mint); box-shadow: 0 6px 0 var(--mint-deep), 0 12px 20px rgba(63,174,147,.26); }
+.btn.mint:active{ box-shadow: 0 2px 0 var(--mint-deep); }
+.btn.lav{ background: var(--lav); box-shadow: 0 6px 0 var(--lav-deep), 0 12px 20px rgba(131,96,214,.24); }
+.btn.lav:active{ box-shadow: 0 2px 0 var(--lav-deep); }
+.btn.ghost{
+  background: var(--card); color: var(--ink-soft);
+  box-shadow: 0 5px 0 var(--line); font-size: .92rem; padding: 14px;
+}
+.btn.ghost:active{ box-shadow: 0 2px 0 var(--line); }
+.btn-row{ display: flex; gap: 10px; }
+.btn-row .btn{ flex: 1; }
+
+/* ---------- スタンプカード ---------- */
+.stamps{
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+.slot{
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 3px dashed var(--line);
+  display: grid; place-items: center;
+  background: var(--milk);
+  position: relative;
+}
+.slot svg{ width: 78%; height: 78%; }
+.slot.filled{ border: 3px solid transparent; background: var(--pink-soft); }
+.slot.pressed{ animation: stamp-press .6s cubic-bezier(.2,1.7,.4,1) both; }
+@keyframes stamp-press{
+  0%  { transform: scale(2.6) rotate(-22deg); opacity: 0; }
+  55% { transform: scale(.86) rotate(6deg);  opacity: 1; }
+  100%{ transform: none; opacity: 1; }
+}
+.stamp-note{
+  margin: 12px 0 0; font-size: .78rem; color: var(--ink-soft);
+  font-weight: 700; text-align: center;
+}
+.stamp-note b{ color: var(--pink-deep); font-size: 1rem; }
+
+/* ---------- クイズ ---------- */
+.quiz-top{ display: flex; align-items: center; gap: 12px; }
+.q-count{
+  font-family: var(--f-display);
+  font-size: 1.05rem; color: var(--pink-deep); flex: none;
+  font-variant-numeric: tabular-nums;
+}
+.bar{
+  flex: 1; height: 14px; border-radius: 999px;
+  background: var(--card); box-shadow: inset 0 2px 4px rgba(232,97,154,.14);
+  overflow: hidden;
+}
+.bar > i{
+  display: block; height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--yellow), var(--pink));
+  border-radius: 999px;
+  transition: width .45s cubic-bezier(.3,1.4,.4,1);
+}
+.hearts{ flex: none; font-size: .95rem; letter-spacing: 1px; }
+
+.q-card{
+  background: var(--card);
+  border-radius: var(--r-lg);
+  padding: 26px 20px 28px;
+  box-shadow: 0 8px 0 var(--line), 0 18px 34px rgba(232,97,154,.13);
+  text-align: center;
+}
+.q-label{
+  display: inline-block; background: var(--yellow-soft); color: var(--yellow-deep);
+  font-size: .72rem; font-weight: 900; padding: 5px 14px; border-radius: 999px;
+  letter-spacing: .1em; margin-bottom: 18px;
+}
+.q-sentence{
+  font-size: clamp(1.25rem, 5.6vw, 1.6rem);
+  font-weight: 700; line-height: 2.7; margin: 0;
+  text-wrap: balance;
+}
+.q-sentence ruby rt{ font-size: .45em; font-weight: 500; color: var(--ink-soft); }
+
+.blank{
+  display: inline-grid; place-items: center;
+  width: 2.1em; height: 2.1em;
+  vertical-align: -.62em;
+  margin: 0 .12em;
+  border-radius: 16px;
+  background: var(--pink-soft);
+  border: 3px dashed var(--pink);
+  font-family: var(--f-kanji); font-weight: 600;
+  color: var(--pink-deep);
+  position: relative;
+  animation: blank-pulse 1.6s ease-in-out infinite;
+}
+@keyframes blank-pulse{
+  0%,100%{ transform: scale(1); }
+  50%    { transform: scale(1.06); }
+}
+.blank .yomi{
+  position: absolute; top: -1.05em; left: 50%; transform: translateX(-50%);
+  font-family: var(--f-body); font-weight: 900;
+  font-size: .44em; white-space: nowrap; color: var(--mint-deep);
+  background: var(--mint-soft); padding: 3px 11px; border-radius: 999px;
+  box-shadow: 0 2px 0 rgba(63,174,147,.18);
+}
+.blank.done{
+  background: var(--mint-soft); border: 3px solid var(--mint); color: var(--mint-deep);
+  animation: none;
+}
+.blank.miss{
+  background: var(--lav-soft); border: 3px solid var(--lav); color: var(--lav-deep);
+  animation: none;
+}
+
+.choices{ display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.choice{
+  font-family: var(--f-kanji);
+  font-weight: 600;
+  font-size: clamp(2.4rem, 13vw, 3.2rem);
+  line-height: 1;
+  padding: 20px 8px 22px;
+  border: none;
+  border-radius: var(--r-md);
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 6px 0 var(--line), 0 12px 20px rgba(232,97,154,.10);
+  cursor: pointer;
+  transition: transform .14s cubic-bezier(.2,1.7,.4,1), box-shadow .14s ease, background .2s ease;
+}
+.choice:hover:not(:disabled){ transform: translateY(-4px) scale(1.03); background: var(--yellow-soft); }
+.choice:active:not(:disabled){ transform: translateY(3px) scale(.97); box-shadow: 0 2px 0 var(--line); }
+.choice:focus-visible{ outline: 4px solid var(--lav); outline-offset: 3px; }
+.choice:disabled{ cursor: default; }
+.choice.correct{
+  background: var(--mint); color: #fff;
+  box-shadow: 0 6px 0 var(--mint-deep);
+  animation: bounce-yes .55s cubic-bezier(.2,1.7,.4,1) both;
+}
+@keyframes bounce-yes{
+  0%{ transform: scale(1); } 40%{ transform: scale(1.16) rotate(-4deg); } 100%{ transform: scale(1.05); }
+}
+.choice.wrong{
+  background: var(--lav-soft); color: var(--lav-deep);
+  box-shadow: 0 6px 0 var(--lav);
+  animation: shake .42s ease both;
+}
+@keyframes shake{
+  0%,100%{ transform: translateX(0); }
+  20%{ transform: translateX(-8px) rotate(-3deg); }
+  45%{ transform: translateX(7px) rotate(3deg); }
+  70%{ transform: translateX(-4px); }
+}
+.choice.dim{ opacity: .42; }
+
+/* ---------- 正解・不正解のふきだし ---------- */
+.judge{
+  position: fixed; inset: 0; z-index: 40;
+  display: grid; place-items: center;
+  pointer-events: none;
+}
+.judge .bubble{
+  font-family: var(--f-display);
+  font-size: clamp(2.4rem, 14vw, 3.6rem);
+  padding: 26px 40px;
+  border-radius: 40px;
+  background: var(--card);
+  box-shadow: 0 14px 0 var(--line), 0 26px 50px rgba(232,97,154,.28);
+  animation: judge-pop .8s cubic-bezier(.2,1.6,.4,1) both;
+}
+.judge.yes .bubble{ color: var(--mint-deep); }
+.judge.no  .bubble{ color: var(--lav-deep); }
+@keyframes judge-pop{
+  0%  { transform: scale(.3) rotate(-14deg); opacity: 0; }
+  35% { transform: scale(1.12) rotate(4deg); opacity: 1; }
+  60% { transform: scale(1) rotate(0); opacity: 1; }
+  100%{ transform: scale(1.02); opacity: 0; }
+}
+
+/* ---------- けっか（はなまる） ---------- */
+.result-hero{ text-align: center; padding: 8px 0 4px; position: relative; }
+.hanamaru{
+  width: min(230px, 62vw); height: min(230px, 62vw);
+  margin: 0 auto; display: block;
+  animation: maru-draw .9s cubic-bezier(.2,1.4,.4,1) both;
+}
+@keyframes maru-draw{
+  0%  { transform: scale(.2) rotate(-90deg); opacity: 0; }
+  60% { transform: scale(1.12) rotate(8deg); opacity: 1; }
+  100%{ transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.score{
+  font-family: var(--f-display);
+  font-size: 1.5rem; color: var(--pink-deep); margin: 6px 0 0;
+}
+.score b{ font-size: 2.6rem; }
+.score-msg{ margin: 6px 0 0; font-weight: 700; color: var(--ink-soft); font-size: .92rem; }
+
+/* ---------- 紙ふぶき ---------- */
+#confetti{ position: fixed; inset: 0; pointer-events: none; z-index: 30; overflow: hidden; }
+.cf{
+  position: absolute; top: -24px;
+  width: 11px; height: 16px;
+  opacity: 0;
+  animation: fall linear forwards;
+  will-change: transform;
+}
+@keyframes fall{
+  0%  { opacity: 1; transform: translateY(-10vh) rotate(0deg); }
+  100%{ opacity: .9; transform: translateY(112vh) rotate(760deg); }
+}
+
+/* ---------- 手書き復習 ---------- */
+.practice-lead{
+  text-align: center; font-weight: 900; font-size: 1.05rem;
+  margin: 0 0 4px; color: var(--pink-deep);
+}
+.practice-sub{
+  text-align: center; font-size: .8rem; color: var(--ink-soft);
+  font-weight: 700; margin: 0 0 16px;
+}
+.pr-item{ margin-bottom: 22px; }
+.pr-item:last-child{ margin-bottom: 0; }
+.masu{
+  position: relative;
+  width: min(240px, 66vw); aspect-ratio: 1;
+  margin: 0 auto 10px;
+  border: 4px solid var(--pink);
+  border-radius: 12px;
+  background: var(--card);
+  display: grid; place-items: center;
+  box-shadow: 0 6px 0 var(--pink-soft);
+}
+/* 十字のマス目 */
+.masu::before, .masu::after{
+  content: ""; position: absolute; background: var(--pink-soft);
+}
+.masu::before{ left: 0; right: 0; top: 50%; height: 3px; transform: translateY(-50%);
+  background-image: repeating-linear-gradient(90deg, var(--pink) 0 10px, transparent 10px 20px);
+  background-color: transparent; }
+.masu::after{ top: 0; bottom: 0; left: 50%; width: 3px; transform: translateX(-50%);
+  background-image: repeating-linear-gradient(180deg, var(--pink) 0 10px, transparent 10px 20px);
+  background-color: transparent; }
+.masu span{
+  font-family: var(--f-kanji); font-weight: 600;
+  font-size: min(180px, 50vw); line-height: 1;
+  color: var(--pink);
+  position: relative; z-index: 1;
+}
+.pr-meta{ text-align: center; }
+.pr-yomi{
+  display: inline-block; background: var(--mint-soft); color: var(--mint-deep);
+  font-weight: 900; font-size: .82rem; padding: 5px 14px; border-radius: 999px;
+}
+.pr-ex{ margin: 8px 0 0; font-size: .88rem; font-weight: 700; color: var(--ink-soft); }
+
+/* ---------- ごほうびカード ---------- */
+.gallery{ display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.gcard{
+  aspect-ratio: 3/4;
+  border-radius: var(--r-md);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px; padding: 10px;
+  box-shadow: 0 6px 0 var(--line), 0 12px 22px rgba(232,97,154,.10);
+  background: var(--card);
+  overflow: hidden;
+  position: relative;
+}
+.gcard svg{ width: 68%; height: auto; }
+.gcard .gname{ font-size: .78rem; font-weight: 900; color: var(--ink); text-align: center; }
+.gcard.locked{ background: var(--milk-deep); }
+.gcard.locked .gname{ color: var(--ink-soft); }
+.gcard.locked .lock svg{ width: 46px; height: 46px; }
+.gcard.fresh{ animation: card-reveal .8s cubic-bezier(.2,1.6,.4,1) both; }
+@keyframes card-reveal{
+  0%  { transform: scale(.4) rotate(-16deg); opacity: 0; }
+  60% { transform: scale(1.1) rotate(5deg); opacity: 1; }
+  100%{ transform: none; opacity: 1; }
+}
+.gcard .ribbon{
+  position: absolute; top: 8px; left: 8px;
+  background: var(--yellow); color: #fff; font-weight: 900; font-size: .6rem;
+  padding: 4px 10px; border-radius: 999px; letter-spacing: .1em;
+  box-shadow: 0 2px 0 var(--yellow-deep);
+}
+
+/* ---------- ごほうび解放のおしらせ ---------- */
+.unlock{
+  background: linear-gradient(140deg, var(--yellow-soft), var(--pink-soft));
+  border: 3px dashed var(--yellow);
+  border-radius: var(--r-lg);
+  padding: 18px; text-align: center;
+}
+.unlock h3{
+  font-family: var(--f-display); margin: 0 0 10px;
+  font-size: 1.15rem; color: var(--yellow-deep);
+}
+.unlock svg{ width: 96px; height: 96px; }
+.unlock .uname{ font-weight: 900; margin-top: 6px; }
+
+.foot{
+  text-align: center; font-size: .7rem; color: var(--ink-soft);
+  font-weight: 700; letter-spacing: .06em; padding-bottom: 4px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  .sp{ opacity: .5; }
+}
+</style>
+
+<div id="sparkles" aria-hidden="true"></div>
+<div id="confetti" aria-hidden="true"></div>
+
+<main class="stage">
+
+  <!-- ========== ホーム ========== -->
+  <section class="screen on" id="s-home">
+    <div class="logo">
+      <h1>はなまる<br>かんじ</h1>
+      <p class="sub">よみながら かんじを えらぼう</p>
+      <span class="grade-badge">小学1〜3年生の かんじ</span>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title"><span class="dot"></span>スタンプカード</h2>
+      <div class="stamps" id="home-stamps"></div>
+      <p class="stamp-note" id="home-stamp-note"></p>
+    </div>
+
+    <button class="btn" id="btn-start">クイズ スタート！</button>
+    <div class="btn-row">
+      <button class="btn mint" id="btn-gallery">ごほうび カード</button>
+      <button class="btn lav" id="btn-review">にがてな かんじ</button>
+    </div>
+
+    <p class="foot">せいせきと ごほうびは この たんまつに ほぞんされます</p>
+  </section>
+
+  <!-- ========== クイズ ========== -->
+  <section class="screen" id="s-quiz">
+    <div class="quiz-top">
+      <span class="q-count" id="q-count">1 / 10</span>
+      <span class="bar"><i id="q-bar"></i></span>
+      <span class="hearts" id="q-hearts"></span>
+    </div>
+
+    <div class="q-card">
+      <span class="q-label" id="q-label">□に はいる かんじは？</span>
+      <p class="q-sentence" id="q-sentence"></p>
+    </div>
+
+    <div class="choices" id="q-choices"></div>
+
+    <button class="btn ghost" id="btn-quit">やめて ホームに もどる</button>
+  </section>
+
+  <!-- ========== けっか ========== -->
+  <section class="screen" id="s-result">
+    <div class="result-hero">
+      <svg class="hanamaru" viewBox="0 0 200 200" role="img" aria-label="はなまる">
+        <g fill="none" stroke="#FF9EC4" stroke-width="9" stroke-linecap="round">
+          <circle cx="100" cy="100" r="66" stroke="#FF9EC4" stroke-width="11"/>
+          <circle cx="100" cy="100" r="49" stroke="#FFD66B" stroke-width="8"/>
+        </g>
+        <g fill="#FF9EC4">
+          <!-- はなびら -->
+          <ellipse cx="100" cy="22"  rx="17" ry="21"/>
+          <ellipse cx="155" cy="45"  rx="17" ry="21" transform="rotate(45 155 45)"/>
+          <ellipse cx="178" cy="100" rx="21" ry="17"/>
+          <ellipse cx="155" cy="155" rx="17" ry="21" transform="rotate(-45 155 155)"/>
+          <ellipse cx="100" cy="178" rx="17" ry="21"/>
+          <ellipse cx="45"  cy="155" rx="17" ry="21" transform="rotate(45 45 155)"/>
+          <ellipse cx="22"  cy="100" rx="21" ry="17"/>
+          <ellipse cx="45"  cy="45"  rx="17" ry="21" transform="rotate(-45 45 45)"/>
+        </g>
+        <text x="100" y="118" text-anchor="middle" font-size="46" font-weight="900"
+              fill="#E8619A" font-family="'Yusei Magic',sans-serif">花丸</text>
+      </svg>
+      <p class="score" id="r-score"></p>
+      <p class="score-msg" id="r-msg"></p>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title"><span class="dot"></span>スタンプカード</h2>
+      <div class="stamps" id="r-stamps"></div>
+      <p class="stamp-note" id="r-stamp-note"></p>
+    </div>
+
+    <div id="r-unlock"></div>
+    <div id="r-practice"></div>
+
+    <button class="btn" id="btn-again">もう いっかい！</button>
+    <button class="btn ghost" id="btn-home">ホームに もどる</button>
+  </section>
+
+  <!-- ========== ごほうびコレクション ========== -->
+  <section class="screen" id="s-gallery">
+    <div class="logo">
+      <h1>ごほうび<br>カード</h1>
+      <p class="sub" id="g-sub"></p>
+    </div>
+    <div class="gallery" id="g-list"></div>
+    <button class="btn ghost" id="btn-gallery-back">ホームに もどる</button>
+  </section>
+
+  <!-- ========== にがてな かんじ ========== -->
+  <section class="screen" id="s-review">
+    <div class="logo">
+      <h1>にがてな<br>かんじ</h1>
+      <p class="sub">3かい つづけて せいかいで クリア！</p>
+    </div>
+    <div class="card" id="rv-body"></div>
+    <button class="btn ghost" id="btn-review-back">ホームに もどる</button>
+  </section>
+
+</main>
+
+<script>
+/* ============================================================
+   1. もんだいデータ（ふやすときは この はいれつに たすだけ）
+      k    : こたえの かんじ
+      yomi : そらんに はいる よみ（ふりがな）
+      pre  : ぶんの まえ半分 / post : うしろ半分（HTMLタグ可・rubyでふりがな）
+      wrong: まちがえやすい 3つ（形・意味が にている かんじ）
+      grade: 学年
+   ============================================================ */
+const QUESTIONS = [
+  { k:"右", yomi:"みぎ", grade:1, pre:"つぎの かどを ", post:" に まがる。", wrong:["左","石","名"] },
+  { k:"左", yomi:"ひだり", grade:1, pre:"", post:" の てを あげる。", wrong:["右","友","石"] },
+  { k:"大", yomi:"おお", grade:1, pre:"とても ", post:"きな いぬ。", wrong:["犬","太","天"] },
+  { k:"犬", yomi:"いぬ", grade:1, pre:"しろい ", post:" と さんぽする。", wrong:["大","太","天"] },
+  { k:"太", yomi:"ふと", grade:2, pre:"", post:"い えんぴつで かく。", wrong:["大","犬","木"] },
+  { k:"天", yomi:"てん", grade:1, pre:"あしたは いい ", post:"きに なりそう。", wrong:["大","犬","夫"] },
+  { k:"日", yomi:"ひ", grade:1, pre:"あさ ", post:" が のぼる。", wrong:["目","白","月"] },
+  { k:"目", yomi:"め", grade:1, pre:"そっと ", post:" を とじる。", wrong:["日","貝","耳"] },
+  { k:"月", yomi:"つき", grade:1, pre:"よるの ", post:" が きれい。", wrong:["日","用","目"] },
+  { k:"白", yomi:"しろ", grade:1, pre:"", post:"い ゆきが つもる。", wrong:["自","百","日"] },
+  { k:"百", yomi:"ひゃく", grade:1, pre:"", post:"えんの おかしを かう。", wrong:["白","千","自"] },
+  { k:"千", yomi:"せん", grade:1, pre:"", post:"えんさつを だす。", wrong:["干","百","午"] },
+  { k:"早", yomi:"はや", grade:1, pre:"けさは ", post:"く おきた。", wrong:["草","白","星"] },
+  { k:"草", yomi:"くさ", grade:1, pre:"のはらの ", post:" が みどりいろ。", wrong:["早","花","茶"] },
+  { k:"花", yomi:"はな", grade:1, pre:"きれいな ", post:" が さいた。", wrong:["草","化","茶"] },
+  { k:"木", yomi:"き", grade:1, pre:"おおきな ", post:" に のぼる。", wrong:["本","休","米"] },
+  { k:"本", yomi:"ほん", grade:1, pre:"としょかんで ", post:" を よむ。", wrong:["木","休","体"] },
+  { k:"休", yomi:"やす", grade:1, pre:"あしたは がっこうが ", post:"み。", wrong:["体","本","木"] },
+  { k:"体", yomi:"からだ", grade:2, pre:"", post:" を うごかすと げんき。", wrong:["休","本","作"] },
+  { k:"名", yomi:"な", grade:1, pre:"じぶんの ", post:"まえを かく。", wrong:["右","各","石"] },
+  { k:"空", yomi:"そら", grade:1, pre:"あおい ", post:" を みあげる。", wrong:["雲","室","立"] },
+  { k:"雲", yomi:"くも", grade:2, pre:"しろい ", post:" が うかぶ。", wrong:["雪","電","空"] },
+  { k:"雪", yomi:"ゆき", grade:2, pre:"", post:"だるまを つくる。", wrong:["雲","電","雨"] },
+  { k:"雨", yomi:"あめ", grade:1, pre:"きゅうに ", post:" が ふって きた。", wrong:["雪","両","雲"] },
+  { k:"村", yomi:"むら", grade:1, pre:"やまの ", post:" に すんで いる。", wrong:["材","町","林"] },
+  { k:"町", yomi:"まち", grade:1, pre:"にぎやかな ", post:" へ でかける。", wrong:["村","田","男"] },
+  { k:"田", yomi:"た", grade:1, pre:"", post:"んぼで いねが そだつ。", wrong:["由","町","男"] },
+  { k:"男", yomi:"おとこ", grade:1, pre:"せの たかい ", post:" の ひと。", wrong:["女","田","力"] },
+  { k:"女", yomi:"おんな", grade:1, pre:"やさしい ", post:" の ひと。", wrong:["男","安","好"] },
+  { k:"読", yomi:"よ", grade:2, pre:"こえに だして ", post:"む。", wrong:["語","話","説"] },
+  { k:"話", yomi:"はな", grade:2, pre:"ともだちと ", post:"す。", wrong:["読","語","記"] },
+  { k:"泳", yomi:"およ", grade:3, pre:"プールで ", post:"ぐ。", wrong:["池","消","汽"] },
+  { k:"消", yomi:"け", grade:3, pre:"へやの でんきを ", post:"す。", wrong:["泳","池","流"] },
+  { k:"送", yomi:"おく", grade:3, pre:"てがみを ", post:"る。", wrong:["返","追","進"] },
+  { k:"転", yomi:"ころ", grade:3, pre:"つまずいて ", post:"ぶ。", wrong:["軽","動","運"] },
+  { k:"買", yomi:"か", grade:2, pre:"おみせで パンを ", post:"う。", wrong:["貝","員","売"] }
+];
+/* ごほうびカード（5スタンプで1まい） */
+const REWARDS = [
+  { name:"しろねこ ちゃん", bg:"#FFF3D4", svg:`<svg viewBox="0 0 100 100"><g><path d="M22 34 L26 12 L42 26 Z" fill="#fff" stroke="#FF9EC4" stroke-width="3" stroke-linejoin="round"/><path d="M78 34 L74 12 L58 26 Z" fill="#fff" stroke="#FF9EC4" stroke-width="3" stroke-linejoin="round"/><ellipse cx="50" cy="56" rx="32" ry="28" fill="#fff" stroke="#FF9EC4" stroke-width="3"/><circle cx="39" cy="52" r="4" fill="#6A4658"/><circle cx="61" cy="52" r="4" fill="#6A4658"/><path d="M50 60 l-4 4 h8 z" fill="#FF9EC4"/><path d="M50 64 q-6 7 -11 2 M50 64 q6 7 11 2" stroke="#6A4658" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="30" cy="62" r="5" fill="#FFDCEB"/><circle cx="70" cy="62" r="5" fill="#FFDCEB"/></g></svg>` },
+  { name:"いちご ケーキ", bg:"#FFEDF5", svg:`<svg viewBox="0 0 100 100"><rect x="18" y="44" width="64" height="38" rx="8" fill="#FFF3D4" stroke="#E0A82E" stroke-width="3"/><path d="M18 52 q10 10 16 0 q10 10 16 0 q10 10 16 0 q6 6 16 0" fill="#FFDCEB" stroke="#FF9EC4" stroke-width="3"/><circle cx="50" cy="34" r="10" fill="#FF9EC4"/><path d="M44 26 q6 -8 12 0" fill="#7FD9C0"/><rect x="47" y="20" width="6" height="8" rx="3" fill="#7FD9C0"/></svg>` },
+  { name:"にじ の はし", bg:"#DAF6EE", svg:`<svg viewBox="0 0 100 100"><g fill="none" stroke-width="8" stroke-linecap="round"><path d="M14 78 a36 36 0 0 1 72 0" stroke="#FF9EC4"/><path d="M25 78 a25 25 0 0 1 50 0" stroke="#FFD66B"/><path d="M36 78 a14 14 0 0 1 28 0" stroke="#7FD9C0"/></g><circle cx="18" cy="80" r="8" fill="#fff"/><circle cx="82" cy="80" r="8" fill="#fff"/></svg>` },
+  { name:"アイス クリーム", bg:"#EEE6FF", svg:`<svg viewBox="0 0 100 100"><path d="M34 50 L50 88 L66 50 Z" fill="#FFD66B" stroke="#E0A82E" stroke-width="3" stroke-linejoin="round"/><circle cx="40" cy="42" r="15" fill="#FFDCEB" stroke="#FF9EC4" stroke-width="3"/><circle cx="60" cy="42" r="15" fill="#DAF6EE" stroke="#7FD9C0" stroke-width="3"/><circle cx="50" cy="30" r="14" fill="#EEE6FF" stroke="#B79BEF" stroke-width="3"/><circle cx="50" cy="16" r="5" fill="#FF9EC4"/></svg>` },
+  { name:"くまさん", bg:"#FFF3D4", svg:`<svg viewBox="0 0 100 100"><circle cx="26" cy="30" r="12" fill="#FFD66B" stroke="#E0A82E" stroke-width="3"/><circle cx="74" cy="30" r="12" fill="#FFD66B" stroke="#E0A82E" stroke-width="3"/><circle cx="50" cy="56" r="30" fill="#FFD66B" stroke="#E0A82E" stroke-width="3"/><ellipse cx="50" cy="64" rx="15" ry="12" fill="#FFF3D4"/><circle cx="40" cy="50" r="4" fill="#6A4658"/><circle cx="60" cy="50" r="4" fill="#6A4658"/><ellipse cx="50" cy="60" rx="5" ry="4" fill="#6A4658"/><path d="M50 64 v5" stroke="#6A4658" stroke-width="2.5"/></svg>` },
+  { name:"おひめさま の かんむり", bg:"#FFEDF5", svg:`<svg viewBox="0 0 100 100"><path d="M16 70 L22 32 L38 52 L50 24 L62 52 L78 32 L84 70 Z" fill="#FFD66B" stroke="#E0A82E" stroke-width="3" stroke-linejoin="round"/><rect x="16" y="70" width="68" height="10" rx="5" fill="#E0A82E"/><circle cx="50" cy="58" r="6" fill="#FF9EC4"/><circle cx="30" cy="62" r="4" fill="#7FD9C0"/><circle cx="70" cy="62" r="4" fill="#B79BEF"/></svg>` },
+  { name:"おはな の かんむり", bg:"#DAF6EE", svg:`<svg viewBox="0 0 100 100"><path d="M14 62 q36 -30 72 0" fill="none" stroke="#7FD9C0" stroke-width="7" stroke-linecap="round"/><g fill="#FF9EC4"><circle cx="26" cy="52" r="7"/><circle cx="50" cy="42" r="8"/><circle cx="74" cy="52" r="7"/></g><g fill="#FFD66B"><circle cx="26" cy="52" r="3"/><circle cx="50" cy="42" r="3.5"/><circle cx="74" cy="52" r="3"/></g><circle cx="38" cy="46" r="5" fill="#EEE6FF"/><circle cx="62" cy="46" r="5" fill="#EEE6FF"/></svg>` },
+  { name:"きらきら ほし", bg:"#EEE6FF", svg:`<svg viewBox="0 0 100 100"><path d="M50 12 L61 40 L91 42 L68 61 L76 90 L50 74 L24 90 L32 61 L9 42 L39 40 Z" fill="#FFD66B" stroke="#E0A82E" stroke-width="3" stroke-linejoin="round"/><circle cx="42" cy="50" r="3.5" fill="#6A4658"/><circle cx="58" cy="50" r="3.5" fill="#6A4658"/><path d="M44 60 q6 6 12 0" stroke="#6A4658" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="34" cy="58" r="4" fill="#FF9EC4" opacity=".7"/><circle cx="66" cy="58" r="4" fill="#FF9EC4" opacity=".7"/></svg>` }
+];
+
+const LOCK_SVG = '<div class="lock"><svg viewBox="0 0 48 48"><rect x="10" y="21" width="28" height="21" rx="6" fill="#FFDCEB" stroke="#FF9EC4" stroke-width="3"/><path d="M17 21 v-5 a7 7 0 0 1 14 0 v5" fill="none" stroke="#FF9EC4" stroke-width="3.5" stroke-linecap="round"/><circle cx="24" cy="30" r="3.5" fill="#FF9EC4"/><rect x="22.5" y="31" width="3" height="6" rx="1.5" fill="#FF9EC4"/></svg></div>';
+
+/* スタンプの絵柄（クリアごとに じゅんばんに かわる） */
+const STAMP_SVGS = [
+  `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="none" stroke="#E8619A" stroke-width="3.5"/><circle cx="20" cy="20" r="9" fill="none" stroke="#FFD66B" stroke-width="3"/><circle cx="20" cy="20" r="3.5" fill="#E8619A"/></svg>`,
+  `<svg viewBox="0 0 40 40"><path d="M20 7 L24 16 L34 17 L26 23 L29 33 L20 27 L11 33 L14 23 L6 17 L16 16 Z" fill="#FFD66B" stroke="#E0A82E" stroke-width="2.5" stroke-linejoin="round"/></svg>`,
+  `<svg viewBox="0 0 40 40"><path d="M20 32 C6 22 6 12 13 10 C17 9 20 12 20 15 C20 12 23 9 27 10 C34 12 34 22 20 32 Z" fill="#FF9EC4" stroke="#E8619A" stroke-width="2.5" stroke-linejoin="round"/></svg>`,
+  `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="6" fill="#FFD66B"/><g fill="#7FD9C0"><ellipse cx="20" cy="9" rx="5" ry="7"/><ellipse cx="20" cy="31" rx="5" ry="7"/><ellipse cx="9" cy="20" rx="7" ry="5"/><ellipse cx="31" cy="20" rx="7" ry="5"/></g></svg>`,
+  `<svg viewBox="0 0 40 40"><path d="M8 22 l8 8 L32 11" fill="none" stroke="#3FAE93" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+];
+
+/* ============================================================
+   2. きおく（LocalStorage）
+   ============================================================ */
+const KEY = "hanamaru-kanji-v1";
+const blankSave = () => ({ stats:{}, stamps:0, clears:0 });
+
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(!raw) return blankSave();
+    return Object.assign(blankSave(), JSON.parse(raw));
+  }catch(e){ return blankSave(); }
+}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(DB)); }catch(e){}
+}
+let DB = load();
+
+function statOf(k){
+  if(!DB.stats[k]) DB.stats[k] = { streak:0, wrong:0, seen:0, mastered:false, lastWrong:0 };
+  return DB.stats[k];
+}
+const unlockedCount = () => Math.min(REWARDS.length, Math.floor(DB.stamps / 5));
+
+/* ============================================================
+   3. しゅつだい アルゴリズム
+      ゆうせん① まちがえた かんじ（まちがえた かいすう が おおいじゅん）
+      ゆうせん② まだ やって いない かんじ
+      ゆうせん③ ふつうの かんじ
+      じょがい  3かい つづけて せいかい＝クリア（たりない ときだけ もどす）
+   ============================================================ */
+const shuffle = a => { const b=a.slice(); for(let i=b.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [b[i],b[j]]=[b[j],b[i]]; } return b; };
+
+function buildSet(size = 10){
+  const wrongPool = [], freshPool = [], normalPool = [], masteredPool = [];
+  for(const q of QUESTIONS){
+    const s = DB.stats[q.k];
+    if(s && s.mastered)      masteredPool.push(q);
+    else if(s && s.wrong > 0) wrongPool.push(q);
+    else if(!s || s.seen === 0) freshPool.push(q);
+    else                      normalPool.push(q);
+  }
+  wrongPool.sort((a,b) => (DB.stats[b.k].wrong - DB.stats[a.k].wrong) || (DB.stats[b.k].lastWrong - DB.stats[a.k].lastWrong));
+
+  const picked = [];
+  const take = arr => { for(const q of arr){ if(picked.length >= size) return; picked.push(q); } };
+  take(wrongPool);                       // まちがえた かんじを さいゆうせん
+  take(shuffle(freshPool));
+  take(shuffle(normalPool));
+  take(shuffle(masteredPool));           // それでも たりなければ クリアずみも もどす
+  return shuffle(picked);
+}
+
+/* ============================================================
+   4. こうかおん（Web Audio API・そとの ファイルは つかわない）
+   ============================================================ */
+let AC = null;
+function ac(){
+  if(!AC){
+    const C = window.AudioContext || window.webkitAudioContext;
+    if(!C) return null;
+    AC = new C();
+  }
+  if(AC.state === "suspended") AC.resume();
+  return AC;
+}
+function tone({ freq, start=0, dur=0.18, type="sine", vol=0.22, slideTo=null }){
+  const c = ac(); if(!c) return;
+  const t0 = c.currentTime + start;
+  const osc = c.createOscillator();
+  const g   = c.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t0);
+  if(slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(vol, t0 + 0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  osc.connect(g).connect(c.destination);
+  osc.start(t0); osc.stop(t0 + dur + 0.05);
+}
+/* 正解：たかめの ピンポン♪ */
+function seCorrect(){
+  tone({ freq: 987.77, dur: 0.14, type:"sine",     vol:0.24 });          // B5
+  tone({ freq: 987.77, dur: 0.14, type:"triangle", vol:0.10 });
+  tone({ freq: 1318.51, start: 0.13, dur: 0.34, type:"sine",     vol:0.24 }); // E6
+  tone({ freq: 1318.51, start: 0.13, dur: 0.34, type:"triangle", vol:0.09 });
+}
+/* 不正解：ひくめの ポコッ */
+function seWrong(){
+  tone({ freq: 240, slideTo: 110, dur: 0.20, type:"triangle", vol:0.26 });
+  tone({ freq: 120, slideTo: 70,  dur: 0.22, type:"sine",     vol:0.18 });
+}
+/* タップ音 */
+function seTap(){ tone({ freq: 660, dur: 0.05, type:"sine", vol:0.08 }); }
+/* クリア：ジャジャーン！ ファンファーレ */
+function seFanfare(){
+  const N = { C5:523.25, E5:659.25, G5:783.99, C6:1046.5, E6:1318.5, G6:1568 };
+  const melody = [
+    [N.C5, 0.00, 0.16], [N.E5, 0.14, 0.16], [N.G5, 0.28, 0.16],
+    [N.C6, 0.42, 0.30], [N.G5, 0.74, 0.14], [N.C6, 0.86, 0.60]
+  ];
+  melody.forEach(([f, s, d]) => {
+    tone({ freq: f, start: s, dur: d, type:"square",   vol:0.10 });
+    tone({ freq: f, start: s, dur: d, type:"triangle", vol:0.20 });
+  });
+  // さいごの わおん
+  [N.C6, N.E6, N.G6].forEach((f, i) =>
+    tone({ freq: f, start: 0.86 + i*0.02, dur: 0.72, type:"sine", vol:0.13 }));
+  // キラキラ
+  for(let i=0;i<7;i++)
+    tone({ freq: 1600 + i*260, start: 1.05 + i*0.055, dur: 0.16, type:"sine", vol:0.07 });
+}
+
+/* ============================================================
+   5. がめん きりかえ
+   ============================================================ */
+const $  = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+function show(id){
+  $$(".screen").forEach(el => el.classList.remove("on"));
+  $("#" + id).classList.add("on");
+  window.scrollTo(0, 0);
+}
+
+/* ============================================================
+   6. きらきら はいけい
+   ============================================================ */
+(function makeSparkles(){
+  const box = $("#sparkles");
+  const marks = ["★","✦","♥","✿","❤","✧"];
+  const cols  = ["#FF9EC4","#FFD66B","#7FD9C0","#B79BEF"];
+  for(let i=0;i<26;i++){
+    const s = document.createElement("span");
+    s.className = "sp";
+    s.textContent = marks[(Math.random()*marks.length)|0];
+    s.style.left = (Math.random()*100) + "%";
+    s.style.top  = (Math.random()*100) + "%";
+    s.style.color = cols[(Math.random()*cols.length)|0];
+    s.style.fontSize = (11 + Math.random()*16) + "px";
+    s.style.animationDelay = (Math.random()*5) + "s";
+    s.style.animationDuration = (3.6 + Math.random()*3.4) + "s";
+    box.appendChild(s);
+  }
+})();
+
+/* ============================================================
+   7. スタンプカードの びょうが
+   ============================================================ */
+function renderStamps(el, noteEl, pressIndex = -1){
+  const filled = DB.stamps % 5;
+  const shown  = (filled === 0 && DB.stamps > 0 && pressIndex === 4) ? 5 : filled;
+  el.innerHTML = "";
+  for(let i=0;i<5;i++){
+    const d = document.createElement("div");
+    d.className = "slot";
+    if(i < shown){
+      d.classList.add("filled");
+      const idx = (Math.floor((DB.stamps - 1 - (shown - 1 - i)) ) % STAMP_SVGS.length + STAMP_SVGS.length) % STAMP_SVGS.length;
+      d.innerHTML = STAMP_SVGS[idx];
+      if(i === pressIndex) d.classList.add("pressed");
+    }
+    el.appendChild(d);
+  }
+  if(noteEl){
+    const left = 5 - shown;
+    const u = unlockedCount();
+    noteEl.innerHTML = (left === 0)
+      ? `カードが いっぱい！ ごほうびカード <b>${u}</b> まい げっとちゅう`
+      : `あと <b>${left}</b> こで ごほうびカードが 1まい もらえるよ（いま <b>${u}</b> まい）`;
+  }
+}
+
+/* ============================================================
+   8. クイズ ほんたい
+   ============================================================ */
+let SET = [], idx = 0, correctCount = 0, missed = [], locked = false;
+
+function startQuiz(){
+  SET = buildSet(10);
+  idx = 0; correctCount = 0; missed = []; locked = false;
+  show("s-quiz");
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = SET[idx];
+  $("#q-count").textContent = `${idx + 1} / ${SET.length}`;
+  $("#q-bar").style.width = ((idx) / SET.length * 100) + "%";
+  $("#q-hearts").textContent = "♥".repeat(Math.max(0, correctCount)).slice(0, 10);
+  $("#q-hearts").style.color = "#FF9EC4";
+
+  $("#q-sentence").innerHTML =
+    q.pre +
+    `<span class="blank" id="blank"><span class="yomi">${q.yomi}</span>?</span>` +
+    q.post;
+
+  const opts = shuffle([q.k, ...q.wrong]);
+  const box = $("#q-choices");
+  box.innerHTML = "";
+  opts.forEach(ch => {
+    const b = document.createElement("button");
+    b.className = "choice";
+    b.type = "button";
+    b.textContent = ch;
+    b.setAttribute("aria-label", ch);
+    b.addEventListener("click", () => answer(b, ch, q));
+    box.appendChild(b);
+  });
+  locked = false;
+}
+
+function answer(btn, choice, q){
+  if(locked) return;
+  locked = true;
+  const s = statOf(q.k);
+  s.seen++;
+
+  const blank = $("#blank");
+  const ok = (choice === q.k);
+
+  $$("#q-choices .choice").forEach(b => {
+    b.disabled = true;
+    if(b.textContent === q.k) b.classList.add("correct");
+    else if(b === btn)        b.classList.add("wrong");
+    else                      b.classList.add("dim");
+  });
+
+  blank.innerHTML = `<span class="yomi">${q.yomi}</span>${q.k}`;
+  blank.classList.add(ok ? "done" : "miss");
+
+  if(ok){
+    correctCount++;
+    s.streak++;
+    if(s.streak >= 3) s.mastered = true;
+    seCorrect();
+    judge("せいかい！", "yes");
+  }else{
+    s.streak = 0;
+    s.wrong++;
+    s.mastered = false;
+    s.lastWrong = Date.now();
+    if(!missed.some(m => m.k === q.k)) missed.push(q);
+    seWrong();
+    judge("おしい！", "no");
+  }
+  save();
+
+  setTimeout(() => {
+    idx++;
+    if(idx < SET.length) renderQuestion();
+    else finish();
+  }, ok ? 900 : 1500);
+}
+
+function judge(text, kind){
+  const d = document.createElement("div");
+  d.className = "judge " + kind;
+  d.innerHTML = `<div class="bubble">${text}</div>`;
+  document.body.appendChild(d);
+  setTimeout(() => d.remove(), 850);
+}
+
+/* ============================================================
+   9. けっか がめん
+   ============================================================ */
+function finish(){
+  $("#q-bar").style.width = "100%";
+
+  const before = unlockedCount();
+  DB.stamps++;
+  DB.clears++;
+  save();
+  const after = unlockedCount();
+
+  $("#r-score").innerHTML = `10もん ちゅう <b>${correctCount}</b> もん せいかい！`;
+  $("#r-msg").textContent =
+    correctCount === 10 ? "パーフェクト！ かんぺきだよ、すごい！" :
+    correctCount >= 8   ? "とっても よく できました！" :
+    correctCount >= 5   ? "はんぶん いじょう せいかい！ その ちょうし！" :
+                          "さいごまで がんばったね。つぎは もっと できるよ！";
+
+  const pressAt = ((DB.stamps - 1) % 5);
+  renderStamps($("#r-stamps"), $("#r-stamp-note"), pressAt);
+
+  // ごほうび かいほう
+  const uBox = $("#r-unlock");
+  uBox.innerHTML = "";
+  if(after > before){
+    const r = REWARDS[after - 1];
+    uBox.innerHTML =
+      `<div class="unlock">
+         <h3>ごほうびカード げっと！</h3>
+         ${r.svg}
+         <div class="uname">「${r.name}」が でてきたよ</div>
+       </div>`;
+  }
+
+  // てもとで かいて みよう
+  const pBox = $("#r-practice");
+  if(missed.length){
+    pBox.innerHTML =
+      `<div class="card">
+         <p class="practice-lead">てもとで かいて みよう！</p>
+         <p class="practice-sub">とめ・はね・はらい に きを つけてね</p>
+         ${missed.map(q => `
+           <div class="pr-item">
+             <div class="masu"><span>${q.k}</span></div>
+             <div class="pr-meta">
+               <span class="pr-yomi">よみ：${q.yomi}</span>
+               <p class="pr-ex">${q.pre}<b style="color:var(--pink-deep)">${q.k}</b>${q.post}</p>
+             </div>
+           </div>`).join("")}
+       </div>`;
+  }else{
+    pBox.innerHTML =
+      `<div class="card" style="text-align:center">
+         <p class="practice-lead">ぜんもん せいかい！</p>
+         <p class="practice-sub" style="margin:0">かきとりの れんしゅうは おやすみ。とっても えらい！</p>
+       </div>`;
+  }
+
+  show("s-result");
+  confetti();
+  seFanfare();
+}
+
+/* ============================================================
+   10. かみふぶき
+   ============================================================ */
+function confetti(){
+  if(window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const box = $("#confetti");
+  const cols = ["#FF9EC4","#FFD66B","#7FD9C0","#B79BEF","#E8619A","#FFFFFF"];
+  for(let i=0;i<70;i++){
+    const c = document.createElement("div");
+    c.className = "cf";
+    const col = cols[(Math.random()*cols.length)|0];
+    c.style.left = (Math.random()*100) + "%";
+    c.style.background = col;
+    if(Math.random() < .35){ c.style.borderRadius = "50%"; c.style.height = "11px"; }
+    else if(Math.random() < .3){ c.style.borderRadius = "3px"; c.style.width = "8px"; c.style.height = "20px"; }
+    c.style.animationDuration = (2.2 + Math.random()*2.2) + "s";
+    c.style.animationDelay = (Math.random()*0.7) + "s";
+    box.appendChild(c);
+    setTimeout(() => c.remove(), 6000);
+  }
+}
+
+/* ============================================================
+   11. ごほうび コレクション / にがてな かんじ
+   ============================================================ */
+function renderGallery(freshIndex = -1){
+  const u = unlockedCount();
+  $("#g-sub").textContent = `${u} / ${REWARDS.length} まい あつめたよ`;
+  const list = $("#g-list");
+  list.innerHTML = "";
+  REWARDS.forEach((r, i) => {
+    const d = document.createElement("div");
+    if(i < u){
+      d.className = "gcard" + (i === freshIndex ? " fresh" : "");
+      d.style.background = r.bg;
+      d.innerHTML = r.svg + `<div class="gname">${r.name}</div>` +
+        (i === u - 1 ? `<div class="ribbon">NEW</div>` : "");
+    }else{
+      d.className = "gcard locked";
+      d.innerHTML = LOCK_SVG + `<div class="gname">スタンプ ${(i+1)*5} こで<br>あけられるよ</div>`;
+    }
+    list.appendChild(d);
+  });
+}
+
+function renderReview(){
+  const box = $("#rv-body");
+  const entries = Object.entries(DB.stats);
+  const weak     = entries.filter(([,s]) => s.wrong > 0 && !s.mastered)
+                          .sort((a,b) => b[1].wrong - a[1].wrong);
+  const mastered = entries.filter(([,s]) => s.mastered);
+
+  if(!entries.length){
+    box.innerHTML = `<p style="text-align:center;font-weight:700;color:var(--ink-soft);margin:8px 0">
+      まだ きろくが ないよ。<br>まずは クイズを 1かい やって みよう！</p>`;
+    return;
+  }
+  const chip = (k, sub, bg, fg) =>
+    `<div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+       <div style="width:58px;height:58px;border-radius:16px;background:${bg};display:grid;place-items:center;
+                   font-family:var(--f-kanji);font-weight:600;font-size:2rem;color:${fg}">${k}</div>
+       <span style="font-size:.68rem;font-weight:900;color:var(--ink-soft)">${sub}</span>
+     </div>`;
+
+  box.innerHTML =
+    `<h2 class="card-title"><span class="dot"></span>いま れんしゅうちゅう（${weak.length}）</h2>
+     <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:22px">
+       ${weak.length ? weak.map(([k,s]) => chip(k, `×${s.wrong}`, "var(--lav-soft)", "var(--lav-deep)")).join("")
+                     : `<p style="font-weight:700;color:var(--ink-soft);margin:0">にがてな かんじは いま ないよ！</p>`}
+     </div>
+     <h2 class="card-title"><span class="dot" style="background:var(--mint);box-shadow:0 0 0 4px var(--mint-soft)"></span>クリア した かんじ（${mastered.length}）</h2>
+     <div style="display:flex;flex-wrap:wrap;gap:12px">
+       ${mastered.length ? mastered.map(([k]) => chip(k, "クリア！", "var(--mint-soft)", "var(--mint-deep)")).join("")
+                         : `<p style="font-weight:700;color:var(--ink-soft);margin:0">3かい つづけて せいかいすると ここに はいるよ</p>`}
+     </div>`;
+}
+
+/* ============================================================
+   12. ボタン
+   ============================================================ */
+$("#btn-start").addEventListener("click", () => { seTap(); startQuiz(); });
+$("#btn-again").addEventListener("click", () => { seTap(); startQuiz(); });
+$("#btn-quit").addEventListener("click",  () => { seTap(); goHome(); });
+$("#btn-home").addEventListener("click",  () => { seTap(); goHome(); });
+$("#btn-gallery").addEventListener("click", () => { seTap(); renderGallery(); show("s-gallery"); });
+$("#btn-gallery-back").addEventListener("click", () => { seTap(); goHome(); });
+$("#btn-review").addEventListener("click", () => { seTap(); renderReview(); show("s-review"); });
+$("#btn-review-back").addEventListener("click", () => { seTap(); goHome(); });
+
+function goHome(){
+  renderStamps($("#home-stamps"), $("#home-stamp-note"));
+  show("s-home");
+}
+
+/* さいしょの びょうが */
+renderStamps($("#home-stamps"), $("#home-stamp-note"));
+</script>
