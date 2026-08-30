@@ -284,6 +284,25 @@ body{
 }
 .q-sentence ruby rt{ font-size: .45em; font-weight: 500; color: var(--ink-soft); }
 
+.q-sentence ruby{ ruby-position: over; }
+.q-sentence.no-furigana rt{ visibility: hidden; }
+.pr-ex ruby rt{ font-size: .5em; font-weight: 500; color: var(--ink-soft); }
+
+/* ふりがなの表示切り替え */
+.ruby-toggle{
+  align-self: center;
+  font-family: var(--f-body); font-weight: 900; font-size: .76rem;
+  color: var(--mint-deep); background: var(--mint-soft);
+  border: none; border-radius: 999px; padding: 8px 18px;
+  box-shadow: 0 3px 0 rgba(63,174,147,.28);
+  cursor: pointer; letter-spacing: .06em;
+  transition: transform .12s cubic-bezier(.2,1.6,.4,1);
+}
+.ruby-toggle:hover{ transform: translateY(-2px); }
+.ruby-toggle:active{ transform: translateY(2px); box-shadow: 0 1px 0 rgba(63,174,147,.28); }
+.ruby-toggle:focus-visible{ outline: 3px solid var(--lav); outline-offset: 3px; }
+.ruby-toggle.off{ color: var(--ink-soft); background: var(--line); box-shadow: 0 3px 0 rgba(232,97,154,.18); }
+
 .blank{
   display: inline-grid; place-items: center;
   width: 2.1em; height: 2.1em;
@@ -558,6 +577,8 @@ body{
       <p class="q-sentence" id="q-sentence"></p>
     </div>
 
+    <button class="ruby-toggle" id="btn-ruby" type="button">ふりがな：あり</button>
+
     <div class="choices" id="q-choices"></div>
 
     <button class="btn ghost" id="btn-quit">やめて ホームに もどる</button>
@@ -634,42 +655,42 @@ body{
       grade: 学年
    ============================================================ */
 const QUESTIONS = [
-  { k:"右", yomi:"みぎ", grade:1, pre:"つぎの かどを ", post:" に まがる。", wrong:["左","石","名"] },
-  { k:"左", yomi:"ひだり", grade:1, pre:"", post:" の てを あげる。", wrong:["右","友","石"] },
-  { k:"大", yomi:"おお", grade:1, pre:"とても ", post:"きな いぬ。", wrong:["犬","太","天"] },
-  { k:"犬", yomi:"いぬ", grade:1, pre:"しろい ", post:" と さんぽする。", wrong:["大","太","天"] },
-  { k:"太", yomi:"ふと", grade:2, pre:"", post:"い えんぴつで かく。", wrong:["大","犬","木"] },
-  { k:"天", yomi:"てん", grade:1, pre:"あしたは いい ", post:"きに なりそう。", wrong:["大","犬","夫"] },
-  { k:"日", yomi:"ひ", grade:1, pre:"あさ ", post:" が のぼる。", wrong:["目","白","月"] },
-  { k:"目", yomi:"め", grade:1, pre:"そっと ", post:" を とじる。", wrong:["日","貝","耳"] },
-  { k:"月", yomi:"つき", grade:1, pre:"よるの ", post:" が きれい。", wrong:["日","用","目"] },
-  { k:"白", yomi:"しろ", grade:1, pre:"", post:"い ゆきが つもる。", wrong:["自","百","日"] },
-  { k:"百", yomi:"ひゃく", grade:1, pre:"", post:"えんの おかしを かう。", wrong:["白","千","自"] },
-  { k:"千", yomi:"せん", grade:1, pre:"", post:"えんさつを だす。", wrong:["干","百","午"] },
-  { k:"早", yomi:"はや", grade:1, pre:"けさは ", post:"く おきた。", wrong:["草","白","星"] },
-  { k:"草", yomi:"くさ", grade:1, pre:"のはらの ", post:" が みどりいろ。", wrong:["早","花","茶"] },
-  { k:"花", yomi:"はな", grade:1, pre:"きれいな ", post:" が さいた。", wrong:["草","化","茶"] },
-  { k:"木", yomi:"き", grade:1, pre:"おおきな ", post:" に のぼる。", wrong:["本","休","米"] },
-  { k:"本", yomi:"ほん", grade:1, pre:"としょかんで ", post:" を よむ。", wrong:["木","休","体"] },
-  { k:"休", yomi:"やす", grade:1, pre:"あしたは がっこうが ", post:"み。", wrong:["体","本","木"] },
-  { k:"体", yomi:"からだ", grade:2, pre:"", post:" を うごかすと げんき。", wrong:["休","本","作"] },
-  { k:"名", yomi:"な", grade:1, pre:"じぶんの ", post:"まえを かく。", wrong:["右","各","石"] },
-  { k:"空", yomi:"そら", grade:1, pre:"あおい ", post:" を みあげる。", wrong:["雲","室","立"] },
-  { k:"雲", yomi:"くも", grade:2, pre:"しろい ", post:" が うかぶ。", wrong:["雪","電","空"] },
-  { k:"雪", yomi:"ゆき", grade:2, pre:"", post:"だるまを つくる。", wrong:["雲","電","雨"] },
-  { k:"雨", yomi:"あめ", grade:1, pre:"きゅうに ", post:" が ふって きた。", wrong:["雪","両","雲"] },
-  { k:"村", yomi:"むら", grade:1, pre:"やまの ", post:" に すんで いる。", wrong:["材","町","林"] },
-  { k:"町", yomi:"まち", grade:1, pre:"にぎやかな ", post:" へ でかける。", wrong:["村","田","男"] },
-  { k:"田", yomi:"た", grade:1, pre:"", post:"んぼで いねが そだつ。", wrong:["由","町","男"] },
-  { k:"男", yomi:"おとこ", grade:1, pre:"せの たかい ", post:" の ひと。", wrong:["女","田","力"] },
-  { k:"女", yomi:"おんな", grade:1, pre:"やさしい ", post:" の ひと。", wrong:["男","安","好"] },
-  { k:"読", yomi:"よ", grade:2, pre:"こえに だして ", post:"む。", wrong:["語","話","説"] },
-  { k:"話", yomi:"はな", grade:2, pre:"ともだちと ", post:"す。", wrong:["読","語","記"] },
-  { k:"泳", yomi:"およ", grade:3, pre:"プールで ", post:"ぐ。", wrong:["池","消","汽"] },
-  { k:"消", yomi:"け", grade:3, pre:"へやの でんきを ", post:"す。", wrong:["泳","池","流"] },
-  { k:"送", yomi:"おく", grade:3, pre:"てがみを ", post:"る。", wrong:["返","追","進"] },
-  { k:"転", yomi:"ころ", grade:3, pre:"つまずいて ", post:"ぶ。", wrong:["軽","動","運"] },
-  { k:"買", yomi:"か", grade:2, pre:"おみせで パンを ", post:"う。", wrong:["貝","員","売"] }
+  { k:"右", yomi:"みぎ", grade:1, pre:"<ruby>次<rt>つぎ</rt></ruby>の <ruby>角<rt>かど</rt></ruby>を ", post:" に <ruby>曲<rt>ま</rt></ruby>がる。", wrong:["左","石","名"] },
+  { k:"左", yomi:"ひだり", grade:1, pre:"", post:" の <ruby>手<rt>て</rt></ruby>を <ruby>上<rt>あ</rt></ruby>げる。", wrong:["右","友","石"] },
+  { k:"大", yomi:"おお", grade:1, pre:"とても ", post:"きな <ruby>声<rt>こえ</rt></ruby>で <ruby>歌<rt>うた</rt></ruby>う。", wrong:["犬","太","天"] },
+  { k:"犬", yomi:"いぬ", grade:1, pre:"<ruby>白<rt>しろ</rt></ruby>い ", post:" と いっしょに <ruby>歩<rt>ある</rt></ruby>く。", wrong:["大","太","天"] },
+  { k:"太", yomi:"ふと", grade:2, pre:"", post:"い えんぴつで <ruby>字<rt>じ</rt></ruby>を <ruby>書<rt>か</rt></ruby>く。", wrong:["大","犬","木"] },
+  { k:"天", yomi:"てん", grade:1, pre:"<ruby>明日<rt>あした</rt></ruby>は いい ", post:"<ruby>気<rt>き</rt></ruby>に なりそう。", wrong:["大","犬","夫"] },
+  { k:"日", yomi:"ひ", grade:1, pre:"<ruby>朝<rt>あさ</rt></ruby>、", post:" が のぼって くる。", wrong:["目","白","月"] },
+  { k:"目", yomi:"め", grade:1, pre:"<ruby>音楽<rt>おんがく</rt></ruby>を きくとき そっと ", post:" を とじる。", wrong:["日","貝","耳"] },
+  { k:"月", yomi:"つき", grade:1, pre:"<ruby>夜<rt>よる</rt></ruby>の ", post:" が とても きれい。", wrong:["日","用","目"] },
+  { k:"白", yomi:"しろ", grade:1, pre:"", post:"い <ruby>雪<rt>ゆき</rt></ruby>が つもる。", wrong:["自","百","日"] },
+  { k:"百", yomi:"ひゃく", grade:1, pre:"", post:"<ruby>円<rt>えん</rt></ruby>の おかしを <ruby>買<rt>か</rt></ruby>う。", wrong:["白","千","自"] },
+  { k:"千", yomi:"せん", grade:1, pre:"", post:"<ruby>円<rt>えん</rt></ruby>さつを <ruby>出<rt>だ</rt></ruby>す。", wrong:["干","百","午"] },
+  { k:"早", yomi:"はや", grade:1, pre:"<ruby>今朝<rt>けさ</rt></ruby>は ", post:"く <ruby>起<rt>お</rt></ruby>きた。", wrong:["草","白","星"] },
+  { k:"草", yomi:"くさ", grade:1, pre:"<ruby>野原<rt>のはら</rt></ruby>の ", post:" が <ruby>緑色<rt>みどりいろ</rt></ruby>だ。", wrong:["早","花","茶"] },
+  { k:"花", yomi:"はな", grade:1, pre:"<ruby>春<rt>はる</rt></ruby>に なって きれいな ", post:" が さいた。", wrong:["草","化","茶"] },
+  { k:"木", yomi:"き", grade:1, pre:"<ruby>大<rt>おお</rt></ruby>きな ", post:" に <ruby>登<rt>のぼ</rt></ruby>る。", wrong:["本","休","米"] },
+  { k:"本", yomi:"ほん", grade:1, pre:"<ruby>図書館<rt>としょかん</rt></ruby>で ", post:" を <ruby>読<rt>よ</rt></ruby>む。", wrong:["木","休","体"] },
+  { k:"休", yomi:"やす", grade:1, pre:"<ruby>明日<rt>あした</rt></ruby>は <ruby>学校<rt>がっこう</rt></ruby>が ", post:"み。", wrong:["体","本","木"] },
+  { k:"体", yomi:"からだ", grade:2, pre:"", post:" を <ruby>動<rt>うご</rt></ruby>かすと <ruby>元気<rt>げんき</rt></ruby>に なる。", wrong:["休","本","作"] },
+  { k:"名", yomi:"な", grade:1, pre:"<ruby>自分<rt>じぶん</rt></ruby>の ", post:"<ruby>前<rt>まえ</rt></ruby>を <ruby>書<rt>か</rt></ruby>く。", wrong:["右","各","石"] },
+  { k:"空", yomi:"そら", grade:1, pre:"<ruby>青<rt>あお</rt></ruby>い ", post:" を <ruby>見<rt>み</rt></ruby>あげる。", wrong:["雲","室","立"] },
+  { k:"雲", yomi:"くも", grade:2, pre:"<ruby>白<rt>しろ</rt></ruby>い ", post:" が ふわふわ うかぶ。", wrong:["雪","電","空"] },
+  { k:"雪", yomi:"ゆき", grade:2, pre:"", post:"だるまを <ruby>作<rt>つく</rt></ruby>る。", wrong:["雲","電","雨"] },
+  { k:"雨", yomi:"あめ", grade:1, pre:"<ruby>急<rt>きゅう</rt></ruby>に ", post:" が ふって きた。", wrong:["雪","両","雲"] },
+  { k:"村", yomi:"むら", grade:1, pre:"<ruby>山<rt>やま</rt></ruby>の ", post:" に <ruby>住<rt>す</rt></ruby>んで いる。", wrong:["材","町","林"] },
+  { k:"町", yomi:"まち", grade:1, pre:"にぎやかな ", post:" へ <ruby>出<rt>で</rt></ruby>かける。", wrong:["村","田","男"] },
+  { k:"田", yomi:"た", grade:1, pre:"", post:"んぼで いねが <ruby>育<rt>そだ</rt></ruby>つ。", wrong:["由","町","男"] },
+  { k:"男", yomi:"おとこ", grade:1, pre:"せの <ruby>高<rt>たか</rt></ruby>い ", post:" の <ruby>人<rt>ひと</rt></ruby>。", wrong:["女","田","力"] },
+  { k:"女", yomi:"おんな", grade:1, pre:"やさしい ", post:" の <ruby>先生<rt>せんせい</rt></ruby>。", wrong:["男","安","好"] },
+  { k:"読", yomi:"よ", grade:2, pre:"<ruby>声<rt>こえ</rt></ruby>に <ruby>出<rt>だ</rt></ruby>して ", post:"む。", wrong:["語","話","説"] },
+  { k:"話", yomi:"はな", grade:2, pre:"<ruby>友<rt>とも</rt></ruby>だちと <ruby>楽<rt>たの</rt></ruby>しく ", post:"す。", wrong:["読","語","記"] },
+  { k:"泳", yomi:"およ", grade:3, pre:"<ruby>夏<rt>なつ</rt></ruby>の プールで ", post:"ぐ。", wrong:["池","消","汽"] },
+  { k:"消", yomi:"け", grade:3, pre:"<ruby>部屋<rt>へや</rt></ruby>の <ruby>電気<rt>でんき</rt></ruby>を ", post:"す。", wrong:["泳","池","流"] },
+  { k:"送", yomi:"おく", grade:3, pre:"<ruby>手紙<rt>てがみ</rt></ruby>を ", post:"る。", wrong:["返","追","進"] },
+  { k:"転", yomi:"ころ", grade:3, pre:"<ruby>石<rt>いし</rt></ruby>に つまずいて ", post:"ぶ。", wrong:["軽","動","運"] },
+  { k:"買", yomi:"か", grade:2, pre:"お<ruby>店<rt>みせ</rt></ruby>で パンを ", post:"う。", wrong:["貝","員","売"] }
 ];
 /* ごほうびカード（5スタンプで1まい） */
 const REWARDS = [
@@ -698,7 +719,7 @@ const STAMP_SVGS = [
    2. きおく（LocalStorage）
    ============================================================ */
 const KEY = "hanamaru-kanji-v1";
-const blankSave = () => ({ stats:{}, stamps:0, clears:0 });
+const blankSave = () => ({ stats:{}, stamps:0, clears:0, furigana:true });
 
 function load(){
   try{
@@ -902,6 +923,7 @@ function renderQuestion(){
     b.addEventListener("click", () => answer(b, ch, q));
     box.appendChild(b);
   });
+  applyFurigana();
   locked = false;
 }
 
@@ -1097,12 +1119,26 @@ function renderReview(){
      </div>`;
 }
 
+/* ふりがなの表示切り替え（よめるように なったら けして よむ れんしゅう） */
+function applyFurigana(){
+  const on = DB.furigana !== false;
+  const sent = $("#q-sentence");
+  if(sent) sent.classList.toggle("no-furigana", !on);
+  const b = $("#btn-ruby");
+  if(b){
+    b.textContent = on ? "ふりがな：あり" : "ふりがな：なし";
+    b.classList.toggle("off", !on);
+    b.setAttribute("aria-pressed", String(!on));
+  }
+}
+
 /* ============================================================
    12. ボタン
    ============================================================ */
 $("#btn-start").addEventListener("click", () => { seTap(); startQuiz(); });
 $("#btn-again").addEventListener("click", () => { seTap(); startQuiz(); });
 $("#btn-quit").addEventListener("click",  () => { seTap(); goHome(); });
+$("#btn-ruby").addEventListener("click",  () => { seTap(); DB.furigana = (DB.furigana === false); save(); applyFurigana(); });
 $("#btn-home").addEventListener("click",  () => { seTap(); goHome(); });
 $("#btn-gallery").addEventListener("click", () => { seTap(); renderGallery(); show("s-gallery"); });
 $("#btn-gallery-back").addEventListener("click", () => { seTap(); goHome(); });
@@ -1116,4 +1152,5 @@ function goHome(){
 
 /* さいしょの びょうが */
 renderStamps($("#home-stamps"), $("#home-stamp-note"));
+applyFurigana();
 </script>
