@@ -433,6 +433,81 @@ body{
   100%{ opacity: .9; transform: translateY(112vh) rotate(760deg); }
 }
 
+/* ---------- かんじの いちらん（おすと おおきくなる） ---------- */
+.rv-hint{
+  margin: -6px 0 12px; font-size: .74rem; font-weight: 700;
+  color: var(--ink-soft); letter-spacing: .04em;
+}
+.kchips{ display: flex; flex-wrap: wrap; gap: 12px; }
+.kchip{
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: none; border: none; padding: 0; cursor: pointer;
+  font-family: var(--f-body);
+  transition: transform .14s cubic-bezier(.2,1.7,.4,1);
+}
+.kchip:hover{ transform: translateY(-3px) scale(1.05); }
+.kchip:active{ transform: translateY(2px) scale(.96); }
+.kchip:focus-visible{ outline: 3px solid var(--lav); outline-offset: 4px; border-radius: 18px; }
+.kchip-face{
+  width: 58px; height: 58px; border-radius: 16px;
+  display: grid; place-items: center;
+  font-family: var(--f-kanji); font-weight: 600; font-size: 2rem;
+  box-shadow: 0 4px 0 rgba(232,97,154,.14);
+}
+.kchip.weak .kchip-face{ background: var(--lav-soft); color: var(--lav-deep); }
+.kchip.done .kchip-face{ background: var(--mint-soft); color: var(--mint-deep); }
+.kchip-sub{ font-size: .68rem; font-weight: 900; color: var(--ink-soft); }
+
+/* ---------- 拡大パネル ---------- */
+.zoom{
+  position: fixed; inset: 0; z-index: 60;
+  display: none; place-items: center;
+  padding: 18px;
+  background: rgba(255, 242, 248, .88);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.zoom.on{ display: grid; animation: popin .3s cubic-bezier(.2,1.5,.4,1) both; }
+.zoom-card{
+  position: relative;
+  width: min(430px, 100%);
+  max-height: 92dvh; overflow-y: auto;
+  background: var(--card);
+  border-radius: 34px;
+  padding: 26px 18px 20px;
+  text-align: center;
+  box-shadow: 0 12px 0 var(--line), 0 30px 60px rgba(232,97,154,.24);
+}
+.zoom-close{
+  position: absolute; top: 12px; right: 12px;
+  width: 40px; height: 40px; border-radius: 50%;
+  border: none; cursor: pointer;
+  background: var(--milk-deep); color: var(--pink-deep);
+  font-size: 1.1rem; font-weight: 900; line-height: 1;
+  box-shadow: 0 3px 0 var(--line);
+}
+.zoom-close:active{ transform: translateY(2px); box-shadow: none; }
+.zoom-close:focus-visible{ outline: 3px solid var(--lav); outline-offset: 3px; }
+.masu.big{ width: min(300px, 68vw); margin-bottom: 14px; }
+.masu.big span{ font-size: min(230px, 52vw); }
+.masu.done{ border-color: var(--mint); box-shadow: 0 6px 0 var(--mint-soft); }
+.masu.done::before{ background-image: repeating-linear-gradient(90deg, var(--mint) 0 10px, transparent 10px 20px); }
+.masu.done::after{ background-image: repeating-linear-gradient(180deg, var(--mint) 0 10px, transparent 10px 20px); }
+.masu.done span{ color: var(--mint); }
+.zoom-meta .pr-ex b{ color: var(--pink-deep); }
+.masu.done ~ .zoom-meta .pr-ex b{ color: var(--mint-deep); }
+.pr-yomi.done{ background: var(--yellow-soft); color: var(--yellow-deep); }
+.zoom-state{
+  margin: 10px 0 0; font-size: .76rem; font-weight: 900; color: var(--ink-soft);
+}
+.zoom-nav{
+  display: flex; align-items: center; gap: 10px; margin-top: 16px;
+}
+.zoom-nav .btn{ flex: 1; }
+.zoom-count{
+  font-family: var(--f-display); font-size: .9rem; color: var(--pink-deep);
+  font-variant-numeric: tabular-nums; flex: none; min-width: 56px;
+}
+
 /* ---------- 手書き復習 ---------- */
 .practice-lead{
   text-align: center; font-weight: 900; font-size: 1.05rem;
@@ -644,6 +719,8 @@ body{
   </section>
 
 </main>
+
+<div class="zoom" id="zoom" role="dialog" aria-modal="true" aria-label="かんじを おおきく みる"></div>
 
 <script>
 /* ============================================================
@@ -1094,30 +1171,85 @@ function renderReview(){
                           .sort((a,b) => b[1].wrong - a[1].wrong);
   const mastered = entries.filter(([,s]) => s.mastered);
 
+  // 拡大表示で「まえ／つぎ」に動く順番（画面に並んでいる順と同じ）
+  chipOrder = [...weak.map(e => e[0]), ...mastered.map(e => e[0])];
+
   if(!entries.length){
+    chipOrder = [];
     box.innerHTML = `<p style="text-align:center;font-weight:700;color:var(--ink-soft);margin:8px 0">
       まだ きろくが ないよ。<br>まずは クイズを 1かい やって みよう！</p>`;
     return;
   }
-  const chip = (k, sub, bg, fg) =>
-    `<div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-       <div style="width:58px;height:58px;border-radius:16px;background:${bg};display:grid;place-items:center;
-                   font-family:var(--f-kanji);font-weight:600;font-size:2rem;color:${fg}">${k}</div>
-       <span style="font-size:.68rem;font-weight:900;color:var(--ink-soft)">${sub}</span>
-     </div>`;
+  const chip = (k, sub, kind) =>
+    `<button class="kchip ${kind}" type="button" data-k="${k}" aria-label="${k} を おおきく みる">
+       <span class="kchip-face">${k}</span>
+       <span class="kchip-sub">${sub}</span>
+     </button>`;
 
   box.innerHTML =
     `<h2 class="card-title"><span class="dot"></span>いま れんしゅうちゅう（${weak.length}）</h2>
-     <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:22px">
-       ${weak.length ? weak.map(([k,s]) => chip(k, `×${s.wrong}`, "var(--lav-soft)", "var(--lav-deep)")).join("")
+     <p class="rv-hint">${weak.length || mastered.length ? "かんじを おすと おおきく みられるよ" : ""}</p>
+     <div class="kchips">
+       ${weak.length ? weak.map(([k,s]) => chip(k, `×${s.wrong}`, "weak")).join("")
                      : `<p style="font-weight:700;color:var(--ink-soft);margin:0">にがてな かんじは いま ないよ！</p>`}
      </div>
-     <h2 class="card-title"><span class="dot" style="background:var(--mint);box-shadow:0 0 0 4px var(--mint-soft)"></span>クリア した かんじ（${mastered.length}）</h2>
-     <div style="display:flex;flex-wrap:wrap;gap:12px">
-       ${mastered.length ? mastered.map(([k]) => chip(k, "クリア！", "var(--mint-soft)", "var(--mint-deep)")).join("")
+     <h2 class="card-title" style="margin-top:22px"><span class="dot" style="background:var(--mint);box-shadow:0 0 0 4px var(--mint-soft)"></span>クリア した かんじ（${mastered.length}）</h2>
+     <div class="kchips">
+       ${mastered.length ? mastered.map(([k]) => chip(k, "クリア！", "done")).join("")
                          : `<p style="font-weight:700;color:var(--ink-soft);margin:0">3かい つづけて せいかいすると ここに はいるよ</p>`}
      </div>`;
 }
+
+/* ---- かんじの 拡大表示（にがてな かんじ の いちらんから ひらく） ---- */
+let chipOrder = [], zoomIndex = -1;
+
+function openZoom(k){
+  const i = chipOrder.indexOf(k);
+  zoomIndex = (i === -1) ? -1 : i;
+  const q = QUESTIONS.find(x => x.k === k);
+  const s = DB.stats[k] || {};
+  const done = !!s.mastered;
+  const hasNav = chipOrder.length > 1 && zoomIndex !== -1;
+
+  $("#zoom").innerHTML =
+    `<div class="zoom-card">
+       <button class="zoom-close" id="zoom-close" type="button" aria-label="とじる">✕</button>
+       <div class="masu big ${done ? "done" : ""}"><span>${k}</span></div>
+       <div class="zoom-meta">
+         <span class="pr-yomi ${done ? "done" : ""}">よみ：${q ? q.yomi : "－"}</span>
+         ${q ? `<p class="pr-ex">${q.pre}<b>${k}</b>${q.post}</p>` : ""}
+         <p class="zoom-state">${done ? "3かい つづけて せいかい！ クリアずみ" : `まちがえた かいすう：${s.wrong || 0}かい`}</p>
+       </div>
+       ${hasNav ? `<div class="zoom-nav">
+          <button class="btn ghost" id="zoom-prev" type="button">‹ まえ</button>
+          <span class="zoom-count">${zoomIndex + 1} / ${chipOrder.length}</span>
+          <button class="btn ghost" id="zoom-next" type="button">つぎ ›</button>
+        </div>` : ""}
+     </div>`;
+
+  $("#zoom").classList.add("on");
+  document.body.style.overflow = "hidden";
+  $("#zoom-close").addEventListener("click", closeZoom);
+  if(hasNav){
+    $("#zoom-prev").addEventListener("click", () => { seTap(); step(-1); });
+    $("#zoom-next").addEventListener("click", () => { seTap(); step(1); });
+  }
+  $("#zoom-close").focus();
+}
+
+function step(d){
+  if(!chipOrder.length) return;
+  zoomIndex = (zoomIndex + d + chipOrder.length) % chipOrder.length;
+  openZoom(chipOrder[zoomIndex]);
+}
+
+function closeZoom(){
+  $("#zoom").classList.remove("on");
+  $("#zoom").innerHTML = "";
+  document.body.style.overflow = "";
+  zoomIndex = -1;
+}
+
 
 /* ふりがなの表示切り替え（よめるように なったら けして よむ れんしゅう） */
 function applyFurigana(){
@@ -1144,6 +1276,23 @@ $("#btn-gallery").addEventListener("click", () => { seTap(); renderGallery(); sh
 $("#btn-gallery-back").addEventListener("click", () => { seTap(); goHome(); });
 $("#btn-review").addEventListener("click", () => { seTap(); renderReview(); show("s-review"); });
 $("#btn-review-back").addEventListener("click", () => { seTap(); goHome(); });
+
+/* かんじを おすと おおきく みえる */
+$("#rv-body").addEventListener("click", e => {
+  const chip = e.target.closest(".kchip");
+  if(!chip) return;
+  seTap();
+  openZoom(chip.dataset.k);
+});
+/* はいけいを おすと とじる */
+$("#zoom").addEventListener("click", e => { if(e.target === $("#zoom")) closeZoom(); });
+/* キーボードでも つかえるように */
+document.addEventListener("keydown", e => {
+  if(!$("#zoom").classList.contains("on")) return;
+  if(e.key === "Escape")     { closeZoom(); }
+  if(e.key === "ArrowLeft")  { step(-1); }
+  if(e.key === "ArrowRight") { step(1); }
+});
 
 function goHome(){
   renderStamps($("#home-stamps"), $("#home-stamp-note"));
