@@ -474,6 +474,15 @@ body{
 }
 .btn.sun:active{ box-shadow: 0 2px 0 var(--yellow-deep); }
 
+/* ---------- テストべんきょう ---------- */
+.btn.test{
+  background: linear-gradient(100deg, var(--lav) 0%, var(--pink) 100%);
+  color: #fff;
+  box-shadow: 0 6px 0 var(--lav-deep), 0 12px 20px rgba(131,96,214,.26);
+}
+.btn.test:active{ box-shadow: 0 2px 0 var(--lav-deep); }
+.btn.test .lv-tag{ opacity: .95; }
+
 /* ---------- じゅくごの 2マス ---------- */
 .pairwrap{
   position: relative; display: inline-flex; gap: .12em;
@@ -708,6 +717,9 @@ body{
     </button>
     <button class="btn sun" id="btn-start2" type="button">
       <span class="lv-tag">レベル 2</span>じゅくごの もんだい
+    </button>
+    <button class="btn test" id="btn-test" type="button">
+      <span class="lv-tag">かんじテスト</span>テストべんきょう
     </button>
     <div class="btn-row">
       <button class="btn mint" id="btn-gallery">ごほうび カード</button>
@@ -1156,6 +1168,24 @@ const JUKUGO = [
   { w:"鉄道", yomi:"てつどう", grade:3, pre:"", post:"の もけいで あそぶ。", wrong1:["銀","金","矢"], wrong2:["通","週","遠"] },
   { w:"問題", yomi:"もんだい", grade:3, pre:"さんすうの ", post:"を とく。", wrong1:["間","聞","開"], wrong2:["起","顔","頭"] }
 ];
+
+/* ============================================================
+   1-3. テストべんきょう
+        直近の かんじテストで まちがえた じゅくご。
+        べんきょうする もんだいを ふやすときは この はいれつに たすだけ。
+   ============================================================ */
+const TEST = [
+  { w:"緑色", yomi:"みどりいろ", grade:3, pre:"はっぱの ", post:"が きれい。", wrong1:["練","線","細"], wrong2:["赤","青","黄"] },
+  { w:"童話", yomi:"どうわ", grade:3, pre:"おばあちゃんが ", post:"を よんで くれた。", wrong1:["動","重","里"], wrong2:["語","読","記"] },
+  { w:"地面", yomi:"じめん", grade:3, pre:"", post:"に えを かく。", wrong1:["池","他","土"], wrong2:["画","回","問"] },
+  { w:"動物", yomi:"どうぶつ", grade:3, pre:"", post:"の ずかんを ひらく。", wrong1:["重","運","助"], wrong2:["牛","持","者"] },
+  { w:"洋服", yomi:"ようふく", grade:3, pre:"あたらしい ", post:"を きる。", wrong1:["羊","様","活"], wrong2:["福","部","期"] },
+  { w:"相談", yomi:"そうだん", grade:3, pre:"せんせいに ", post:"する。", wrong1:["想","植","根"], wrong2:["話","語","調"] },
+  { w:"次回", yomi:"じかい", grade:3, pre:"", post:"の やくそくを きめる。", wrong1:["氷","水","写"], wrong2:["国","園","図"] },
+  { w:"十秒", yomi:"じゅうびょう", grade:3, pre:"あと ", post:"で スタートする。", wrong1:["千","土","王"], wrong2:["秋","科","和"] },
+  { w:"鉄道", yomi:"てつどう", grade:3, pre:"", post:"の もけいを あつめる。", wrong1:["銀","金","矢"], wrong2:["通","週","遠"] },
+  { w:"練習", yomi:"れんしゅう", grade:3, pre:"まいにち ピアノを ", post:"する。", wrong1:["緑","線","紙"], wrong2:["集","週","者"] }
+];
 /* ごほうびカード（5スタンプで1まい） */
 const REWARDS = [
   { name:"しろねこ ちゃん", bg:"#FFF3D4", svg:`<svg viewBox="0 0 100 100"><g><path d="M22 34 L26 12 L42 26 Z" fill="#fff" stroke="#FF9EC4" stroke-width="3" stroke-linejoin="round"/><path d="M78 34 L74 12 L58 26 Z" fill="#fff" stroke="#FF9EC4" stroke-width="3" stroke-linejoin="round"/><ellipse cx="50" cy="56" rx="32" ry="28" fill="#fff" stroke="#FF9EC4" stroke-width="3"/><circle cx="39" cy="52" r="4" fill="#6A4658"/><circle cx="61" cy="52" r="4" fill="#6A4658"/><path d="M50 60 l-4 4 h8 z" fill="#FF9EC4"/><path d="M50 64 q-6 7 -11 2 M50 64 q6 7 11 2" stroke="#6A4658" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="30" cy="62" r="5" fill="#FFDCEB"/><circle cx="70" cy="62" r="5" fill="#FFDCEB"/></g></svg>` },
@@ -1247,6 +1277,7 @@ function pickSet(list, stats, keyOf, size){
 }
 
 function buildSet(size = 10){
+  if(LEVEL === 3) return pickSet(TEST, DB.wstats, q => q.w, size);   // テストは はんいに かんけいなく 10問ぜんぶ
   return LEVEL === 1
     ? pickSet(QUESTIONS.filter(inRange), DB.stats,  q => q.k, size)
     : pickSet(JUKUGO.filter(inRange),    DB.wstats, q => q.w, size);
@@ -1387,7 +1418,7 @@ function startQuiz(level){
 
 function renderQuestion(){
   const q = SET[idx];
-  $("#q-count").textContent = `Lv.${LEVEL}　${idx + 1} / ${SET.length}`;
+  $("#q-count").textContent = `${LEVEL === 3 ? "テスト" : "Lv." + LEVEL}　${idx + 1} / ${SET.length}`;
   $("#q-bar").style.width = ((idx) / SET.length * 100) + "%";
   $("#q-hearts").textContent = "♥".repeat(Math.max(0, correctCount)).slice(0, 10);
   $("#q-hearts").style.color = "#FF9EC4";
@@ -1755,7 +1786,7 @@ function applyRange(){
   $$("#range-pills .range-pill").forEach(b => b.classList.toggle("on", b.dataset.g === g));
   const n1 = QUESTIONS.filter(inRange).length;
   const n2 = JUKUGO.filter(inRange).length;
-  $("#range-note").innerHTML = `レベル1 <b>${n1}</b>もん ／ レベル2 <b>${n2}</b>もん`;
+  $("#range-note").innerHTML = `レベル1 <b>${n1}</b>もん ／ レベル2 <b>${n2}</b>もん<br><span style="font-size:.92em">テストべんきょうは はんいに かんけいなく <b>${TEST.length}</b>もん</span>`;
 }
 
 /* ふりがなの表示切り替え（よめるように なったら けして よむ れんしゅう） */
@@ -1776,6 +1807,7 @@ function applyFurigana(){
    ============================================================ */
 $("#btn-start").addEventListener("click",  () => { seTap(); startQuiz(1); });
 $("#btn-start2").addEventListener("click", () => { seTap(); startQuiz(2); });
+$("#btn-test").addEventListener("click",   () => { seTap(); startQuiz(3); });
 $("#btn-again").addEventListener("click", () => { seTap(); startQuiz(LEVEL); });
 $("#btn-quit").addEventListener("click",  () => { seTap(); goHome(); });
 $("#range-pills").addEventListener("click", e => {
