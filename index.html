@@ -203,7 +203,9 @@ body{
   width: 100%;
   letter-spacing: .04em;
 }
-.btn:hover{ transform: translateY(-3px) scale(1.02); filter: brightness(1.04); }
+@media (hover: hover) and (pointer: fine){
+  .btn:hover{ transform: translateY(-3px) scale(1.02); filter: brightness(1.04); }
+}
 .btn:active{ transform: translateY(4px) scale(.98); box-shadow: 0 2px 0 var(--pink-deep); }
 .btn:focus-visible{ outline: 4px solid var(--lav); outline-offset: 3px; }
 .btn.mint{ background: var(--mint); box-shadow: 0 6px 0 var(--mint-deep), 0 12px 20px rgba(63,174,147,.26); }
@@ -298,7 +300,9 @@ body{
   cursor: pointer; letter-spacing: .06em;
   transition: transform .12s cubic-bezier(.2,1.6,.4,1);
 }
-.ruby-toggle:hover{ transform: translateY(-2px); }
+@media (hover: hover) and (pointer: fine){
+  .ruby-toggle:hover{ transform: translateY(-2px); }
+}
 .ruby-toggle:active{ transform: translateY(2px); box-shadow: 0 1px 0 rgba(63,174,147,.28); }
 .ruby-toggle:focus-visible{ outline: 3px solid var(--lav); outline-offset: 3px; }
 .ruby-toggle.off{ color: var(--ink-soft); background: var(--line); box-shadow: 0 3px 0 rgba(232,97,154,.18); }
@@ -351,7 +355,11 @@ body{
   cursor: pointer;
   transition: transform .14s cubic-bezier(.2,1.7,.4,1), box-shadow .14s ease, background .2s ease;
 }
-.choice:hover:not(:disabled){ transform: translateY(-4px) scale(1.03); background: var(--yellow-soft); }
+/* マウスのある端末だけ。スマホは直前にタップした位置に hover が残り、
+   次の問題でその位置の選択肢が最初から色づいて見えてしまうため */
+@media (hover: hover) and (pointer: fine){
+  .choice:hover:not(:disabled){ transform: translateY(-4px) scale(1.03); }
+}
 .choice:active:not(:disabled){ transform: translateY(3px) scale(.97); box-shadow: 0 2px 0 var(--line); }
 .choice:focus-visible{ outline: 4px solid var(--lav); outline-offset: 3px; }
 .choice:disabled{ cursor: default; }
@@ -475,7 +483,9 @@ body{
   font-family: var(--f-body);
   transition: transform .14s cubic-bezier(.2,1.7,.4,1);
 }
-.kchip:hover{ transform: translateY(-3px) scale(1.05); }
+@media (hover: hover) and (pointer: fine){
+  .kchip:hover{ transform: translateY(-3px) scale(1.05); }
+}
 .kchip:active{ transform: translateY(2px) scale(.96); }
 .kchip:focus-visible{ outline: 3px solid var(--lav); outline-offset: 4px; border-radius: 18px; }
 .kchip-face{
