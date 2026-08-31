@@ -858,7 +858,135 @@ const QUESTIONS = [
   { k:"味", yomi:"あじ", grade:3, pre:"この スープは いい ", post:"が する。", wrong:["妹","明","品"] },
   { k:"育", yomi:"そだ", grade:3, pre:"<ruby>花<rt>はな</rt></ruby>を <ruby>大<rt>おお</rt></ruby>きく ", post:"てる。", wrong:["肉","有","助"] },
   { k:"進", yomi:"すす", grade:3, pre:"まっすぐ ", post:"む。", wrong:["通","送","追"] },
-  { k:"追", yomi:"お", grade:3, pre:"にげる ねこを ", post:"いかける。", wrong:["進","送","返"] }
+  { k:"追", yomi:"お", grade:3, pre:"にげる ねこを ", post:"いかける。", wrong:["進","送","返"] },
+  { k:"山", yomi:"やま", grade:1, pre:"たかい ", post:" に のぼる。", wrong:["川","田","出"] },
+  { k:"川", yomi:"かわ", grade:1, pre:"", post:"で さかなを つる。", wrong:["山","州","水"] },
+  { k:"水", yomi:"みず", grade:1, pre:"コップの ", post:"を のむ。", wrong:["氷","木","火"] },
+  { k:"火", yomi:"ひ", grade:1, pre:"キャンプで ", post:"を おこす。", wrong:["水","大","犬"] },
+  { k:"土", yomi:"つち", grade:1, pre:"はたけの ", post:"を ほる。", wrong:["王","上","工"] },
+  { k:"金", yomi:"きん", grade:1, pre:"", post:"いろの メダルを もらう。", wrong:["全","銀","王"] },
+  { k:"石", yomi:"いし", grade:1, pre:"かわらの ", post:"を ひろう。", wrong:["右","古","名"] },
+  { k:"糸", yomi:"いと", grade:1, pre:"はりに ", post:"を とおす。", wrong:["紙","線","細"] },
+  { k:"耳", yomi:"みみ", grade:1, pre:"", post:"を すませて きく。", wrong:["目","自","首"] },
+  { k:"手", yomi:"て", grade:1, pre:"ごはんの まえに ", post:"を あらう。", wrong:["毛","才","午"] },
+  { k:"足", yomi:"あし", grade:1, pre:"", post:"が とても はやい。", wrong:["走","定","星"] },
+  { k:"口", yomi:"くち", grade:1, pre:"", post:"を おおきく あける。", wrong:["日","目","回"] },
+  { k:"見", yomi:"み", grade:1, pre:"テレビを ", post:"る。", wrong:["貝","買","目"] },
+  { k:"車", yomi:"くるま", grade:1, pre:"あたらしい ", post:"に のる。", wrong:["東","事","直"] },
+  { k:"赤", yomi:"あか", grade:1, pre:"", post:"い りんごを たべる。", wrong:["青","白","黒"] },
+  { k:"青", yomi:"あお", grade:1, pre:"", post:"い うみが ひろがる。", wrong:["赤","晴","星"] },
+  { k:"森", yomi:"もり", grade:1, pre:"ふかい ", post:"に すむ どうぶつ。", wrong:["林","木","竹"] },
+  { k:"竹", yomi:"たけ", grade:1, pre:"", post:"とんぼを つくる。", wrong:["木","林","村"] },
+  { k:"虫", yomi:"むし", grade:1, pre:"はっぱに ", post:"が とまる。", wrong:["申","由","田"] },
+  { k:"年", yomi:"とし", grade:1, pre:"あたらしい ", post:"が はじまる。", wrong:["午","牛","毛"] },
+  { k:"貝", yomi:"かい", grade:1, pre:"はまべで ", post:"を ひろう。", wrong:["目","買","見"] },
+  { k:"玉", yomi:"たま", grade:1, pre:"シャボン", post:"が とんで いく。", wrong:["王","金","主"] },
+  { k:"王", yomi:"おう", grade:1, pre:"", post:"さまの おしろ。", wrong:["玉","主","全"] },
+  { k:"立", yomi:"た", grade:1, pre:"まっすぐ ", post:"つ。", wrong:["音","言","章"] },
+  { k:"出", yomi:"で", grade:1, pre:"いえを ", post:"る じかん。", wrong:["山","内","止"] },
+  { k:"入", yomi:"はい", grade:1, pre:"へやに ", post:"る。", wrong:["人","八","大"] },
+  { k:"上", yomi:"うえ", grade:1, pre:"たなの ", post:"に のせる。", wrong:["下","土","止"] },
+  { k:"下", yomi:"した", grade:1, pre:"つくえの ", post:"に もぐる。", wrong:["上","土","丁"] },
+  { k:"中", yomi:"なか", grade:1, pre:"はこの ", post:"を のぞく。", wrong:["申","虫","由"] },
+  { k:"小", yomi:"ちい", grade:1, pre:"", post:"さな はなが さく。", wrong:["少","大","水"] },
+  { k:"生", yomi:"い", grade:1, pre:"", post:"きものを かんさつする。", wrong:["牛","主","王"] },
+  { k:"先", yomi:"せん", grade:1, pre:"", post:"に すすんで あるく。", wrong:["光","兄","矢"] },
+  { k:"気", yomi:"き", grade:1, pre:"げん", post:"が いちばん。", wrong:["汽","元","天"] },
+  { k:"文", yomi:"ぶん", grade:1, pre:"", post:"しょうを かく。", wrong:["父","交","方"] },
+  { k:"字", yomi:"じ", grade:1, pre:"ノートに ", post:"を かく。", wrong:["学","守","安"] },
+  { k:"学", yomi:"がく", grade:1, pre:"", post:"しゅうを がんばる。", wrong:["字","科","業"] },
+  { k:"校", yomi:"こう", grade:1, pre:"がっ", post:"の もんが ひらく。", wrong:["交","木","村"] },
+  { k:"音", yomi:"おと", grade:1, pre:"ドアの ", post:"が した。", wrong:["立","言","首"] },
+  { k:"林", yomi:"はやし", grade:1, pre:"たけ", post:"を ぬける。", wrong:["木","森","村"] },
+  { k:"元", yomi:"げん", grade:2, pre:"", post:"きに あいさつする。", wrong:["気","兄","先"] },
+  { k:"兄", yomi:"あに", grade:2, pre:"", post:"と やきゅうを する。", wrong:["元","先","見"] },
+  { k:"弟", yomi:"おとうと", grade:2, pre:"", post:"と いっしょに あそぶ。", wrong:["第","弱","強"] },
+  { k:"姉", yomi:"あね", grade:2, pre:"", post:"が ピアノを ひく。", wrong:["妹","始","市"] },
+  { k:"妹", yomi:"いもうと", grade:2, pre:"", post:"の たんじょうびを いわう。", wrong:["姉","味","明"] },
+  { k:"母", yomi:"はは", grade:2, pre:"", post:"の りょうりは おいしい。", wrong:["毎","海","父"] },
+  { k:"父", yomi:"ちち", grade:2, pre:"", post:"と つりに いく。", wrong:["交","文","母"] },
+  { k:"友", yomi:"とも", grade:2, pre:"", post:"だちと わらいあう。", wrong:["反","右","左"] },
+  { k:"春", yomi:"はる", grade:2, pre:"", post:"に さくらが さく。", wrong:["夏","昼","書"] },
+  { k:"夏", yomi:"なつ", grade:2, pre:"", post:"は とても あつい。", wrong:["春","秋","冬"] },
+  { k:"秋", yomi:"あき", grade:2, pre:"", post:"に はっぱが おちる。", wrong:["夏","冬","科"] },
+  { k:"冬", yomi:"ふゆ", grade:2, pre:"", post:"は とても さむい。", wrong:["夏","秋","終"] },
+  { k:"朝", yomi:"あさ", grade:2, pre:"", post:"ごはんを しっかり たべる。", wrong:["昼","晴","明"] },
+  { k:"昼", yomi:"ひる", grade:2, pre:"", post:"やすみに そとで あそぶ。", wrong:["朝","書","春"] },
+  { k:"夜", yomi:"よる", grade:2, pre:"", post:"に ほしを ながめる。", wrong:["夕","外","多"] },
+  { k:"海", yomi:"うみ", grade:2, pre:"", post:"で およぐ。", wrong:["毎","母","池"] },
+  { k:"池", yomi:"いけ", grade:2, pre:"", post:"に こいが およぐ。", wrong:["地","他","油"] },
+  { k:"地", yomi:"ち", grade:2, pre:"", post:"めんに えを かく。", wrong:["池","他","土"] },
+  { k:"岩", yomi:"いわ", grade:2, pre:"おおきな ", post:"に のぼる。", wrong:["石","山","炭"] },
+  { k:"谷", yomi:"たに", grade:2, pre:"", post:"に かかる はし。", wrong:["公","分","合"] },
+  { k:"野", yomi:"の", grade:2, pre:"", post:"さいを たくさん たべる。", wrong:["里","理","予"] },
+  { k:"星", yomi:"ほし", grade:2, pre:"よぞらの ", post:"が きれい。", wrong:["早","里","晴"] },
+  { k:"晴", yomi:"は", grade:2, pre:"そらが ", post:"れて きた。", wrong:["青","星","朝"] },
+  { k:"風", yomi:"かぜ", grade:2, pre:"つよい ", post:"が ふく。", wrong:["雨","雲","鳴"] },
+  { k:"鳥", yomi:"とり", grade:2, pre:"", post:"が とんで いく。", wrong:["島","馬","魚"] },
+  { k:"魚", yomi:"さかな", grade:2, pre:"", post:"を やいて たべる。", wrong:["鳥","馬","肉"] },
+  { k:"馬", yomi:"うま", grade:2, pre:"", post:"に のって はしる。", wrong:["鳥","魚","駅"] },
+  { k:"歩", yomi:"ある", grade:2, pre:"こうえんを ", post:"く。", wrong:["走","足","止"] },
+  { k:"走", yomi:"はし", grade:2, pre:"グラウンドを ", post:"る。", wrong:["歩","足","起"] },
+  { k:"止", yomi:"と", grade:2, pre:"くるまが ", post:"まる。", wrong:["正","上","山"] },
+  { k:"正", yomi:"ただ", grade:1, pre:"", post:"しい こたえを えらぶ。", wrong:["止","主","王"] },
+  { k:"明", yomi:"あか", grade:2, pre:"へやが ", post:"るく なる。", wrong:["朝","昼","晴"] },
+  { k:"数", yomi:"かず", grade:2, pre:"ほしの ", post:"を かぞえる。", wrong:["教","対","放"] },
+  { k:"教", yomi:"おし", grade:2, pre:"べんきょうを ", post:"える。", wrong:["数","対","放"] },
+  { k:"通", yomi:"とお", grade:2, pre:"みちを ", post:"る。", wrong:["週","進","道"] },
+  { k:"道", yomi:"みち", grade:2, pre:"ひろい ", post:"を あるく。", wrong:["通","週","遠"] },
+  { k:"遠", yomi:"とお", grade:2, pre:"", post:"くの やまを ながめる。", wrong:["園","道","通"] },
+  { k:"園", yomi:"えん", grade:2, pre:"どうぶつ", post:"へ でかける。", wrong:["遠","国","回"] },
+  { k:"安", yomi:"やす", grade:3, pre:"ねだんが ", post:"い。", wrong:["字","守","実"] },
+  { k:"暗", yomi:"くら", grade:3, pre:"へやが ", post:"く なる。", wrong:["明","音","暑"] },
+  { k:"医", yomi:"い", grade:3, pre:"", post:"しゃに みてもらう。", wrong:["区","曲","反"] },
+  { k:"飲", yomi:"の", grade:3, pre:"みずを ", post:"む。", wrong:["食","館","歌"] },
+  { k:"運", yomi:"はこ", grade:3, pre:"にもつを ", post:"ぶ。", wrong:["転","通","送"] },
+  { k:"駅", yomi:"えき", grade:3, pre:"", post:"で でんしゃを まつ。", wrong:["馬","鳥","野"] },
+  { k:"温", yomi:"あたた", grade:3, pre:"", post:"かい スープを のむ。", wrong:["湯","場","泳"] },
+  { k:"開", yomi:"ひら", grade:3, pre:"まどを ", post:"ける。", wrong:["間","聞","門"] },
+  { k:"寒", yomi:"さむ", grade:3, pre:"きょうは とても ", post:"い。", wrong:["実","室","家"] },
+  { k:"感", yomi:"かん", grade:3, pre:"うれしく ", post:"じる。", wrong:["想","思","意"] },
+  { k:"漢", yomi:"かん", grade:3, pre:"", post:"じを おぼえる。", wrong:["湖","港","活"] },
+  { k:"岸", yomi:"きし", grade:3, pre:"かわの ", post:"を あるく。", wrong:["岩","石","炭"] },
+  { k:"起", yomi:"お", grade:3, pre:"あさ はやく ", post:"きる。", wrong:["走","足","題"] },
+  { k:"急", yomi:"いそ", grade:3, pre:"", post:"いで はしる。", wrong:["息","思","悪"] },
+  { k:"球", yomi:"きゅう", grade:3, pre:"や", post:"を して あそぶ。", wrong:["玉","王","地"] },
+  { k:"橋", yomi:"はし", grade:3, pre:"かわに ", post:"を かける。", wrong:["様","横","植"] },
+  { k:"業", yomi:"ぎょう", grade:3, pre:"じゅ", post:"が はじまる。", wrong:["葉","楽","薬"] },
+  { k:"苦", yomi:"くる", grade:3, pre:"", post:"しい ときも がんばる。", wrong:["草","昔","者"] },
+  { k:"港", yomi:"みなと", grade:3, pre:"", post:"に ふねが つく。", wrong:["湖","泳","活"] },
+  { k:"湖", yomi:"みずうみ", grade:3, pre:"しずかな ", post:"を ながめる。", wrong:["港","湯","油"] },
+  { k:"詩", yomi:"し", grade:3, pre:"", post:"を こえに だして よむ。", wrong:["語","話","読"] },
+  { k:"拾", yomi:"ひろ", grade:3, pre:"ごみを ", post:"う。", wrong:["持","指","打"] },
+  { k:"持", yomi:"も", grade:3, pre:"かばんを ", post:"つ。", wrong:["拾","指","打"] },
+  { k:"指", yomi:"ゆび", grade:3, pre:"", post:"で そらを さす。", wrong:["持","拾","歯"] },
+  { k:"歯", yomi:"は", grade:3, pre:"ごはんの あとに ", post:"を みがく。", wrong:["指","歩","由"] },
+  { k:"住", yomi:"す", grade:3, pre:"この まちに ", post:"む。", wrong:["注","主","柱"] },
+  { k:"注", yomi:"そそ", grade:3, pre:"コップに ジュースを ", post:"ぐ。", wrong:["住","柱","主"] },
+  { k:"柱", yomi:"はしら", grade:3, pre:"いえの ", post:"は ふとい。", wrong:["住","注","植"] },
+  { k:"重", yomi:"おも", grade:3, pre:"この はこは とても ", post:"い。", wrong:["動","里","野"] },
+  { k:"暑", yomi:"あつ", grade:3, pre:"なつは とても ", post:"い。", wrong:["暗","昔","者"] },
+  { k:"助", yomi:"たす", grade:3, pre:"ともだちを ", post:"ける。", wrong:["動","重","列"] },
+  { k:"勝", yomi:"か", grade:3, pre:"しあいに ", post:"つ。", wrong:["負","乗","勉"] },
+  { k:"負", yomi:"ま", grade:3, pre:"しょうぶに ", post:"ける。", wrong:["勝","員","貝"] },
+  { k:"乗", yomi:"の", grade:3, pre:"バスに ", post:"る。", wrong:["勝","重","葉"] },
+  { k:"植", yomi:"う", grade:3, pre:"にわに <ruby>木<rt>き</rt></ruby>を ", post:"える。", wrong:["根","相","柱"] },
+  { k:"神", yomi:"かみ", grade:3, pre:"", post:"さまに おいのりする。", wrong:["申","福","礼"] },
+  { k:"真", yomi:"ま", grade:3, pre:"", post:"ん<ruby>中<rt>なか</rt></ruby>に すわる。", wrong:["直","具","県"] },
+  { k:"速", yomi:"はや", grade:3, pre:"", post:"く はしる れんしゅう。", wrong:["遠","通","送"] },
+  { k:"打", yomi:"う", grade:3, pre:"ボールを ", post:"つ。", wrong:["持","指","拾"] },
+  { k:"待", yomi:"ま", grade:3, pre:"バスていで ", post:"つ。", wrong:["持","対","村"] },
+  { k:"短", yomi:"みじか", grade:3, pre:"えんぴつが ", post:"く なる。", wrong:["豆","登","重"] },
+  { k:"着", yomi:"き", grade:3, pre:"あたらしい ふくを ", post:"る。", wrong:["美","羊","表"] },
+  { k:"調", yomi:"しら", grade:3, pre:"じしょで ", post:"べる。", wrong:["語","談","読"] },
+  { k:"笛", yomi:"ふえ", grade:3, pre:"", post:"を ふいて あそぶ。", wrong:["箱","筆","第"] },
+  { k:"登", yomi:"のぼ", grade:3, pre:"<ruby>山<rt>やま</rt></ruby>に ", post:"る。", wrong:["豆","発","短"] },
+  { k:"波", yomi:"なみ", grade:3, pre:"うみの ", post:"が たかい。", wrong:["皮","泳","池"] },
+  { k:"箱", yomi:"はこ", grade:3, pre:"", post:"に おもちゃを いれる。", wrong:["笛","筆","相"] },
+  { k:"畑", yomi:"はたけ", grade:3, pre:"", post:"で やさいを そだてる。", wrong:["田","由","町"] },
+  { k:"反", yomi:"はん", grade:3, pre:"", post:"たいの てを あげる。", wrong:["友","板","皮"] },
+  { k:"板", yomi:"いた", grade:3, pre:"くろ", post:"に かく。", wrong:["反","皮","根"] },
+  { k:"皮", yomi:"かわ", grade:3, pre:"りんごの ", post:"を むく。", wrong:["反","板","波"] }
 ];
 
 /* ============================================================
@@ -900,7 +1028,43 @@ const JUKUGO = [
   { w:"森林", yomi:"しんりん", grade:1, pre:"", post:"の <ruby>中<rt>なか</rt></ruby>を <ruby>歩<rt>ある</rt></ruby>く。", wrong1:["竹","山","草"], wrong2:["木","村","校"] },
   { w:"火山", yomi:"かざん", grade:1, pre:"", post:"から けむりが <ruby>出<rt>で</rt></ruby>る。", wrong1:["水","大","犬"], wrong2:["川","石","田"] },
   { w:"千円", yomi:"せんえん", grade:1, pre:"おこづかいで ", post:"の <ruby>本<rt>ほん</rt></ruby>を <ruby>買<rt>か</rt></ruby>う。", wrong1:["十","百","午"], wrong2:["丸","月","田"] },
-  { w:"名人", yomi:"めいじん", grade:1, pre:"おりがみの ", post:"に なりたい。", wrong1:["多","石","右"], wrong2:["入","大","八"] }
+  { w:"名人", yomi:"めいじん", grade:1, pre:"おりがみの ", post:"に なりたい。", wrong1:["多","石","右"], wrong2:["入","大","八"] },
+  { w:"花見", yomi:"はなみ", grade:1, pre:"はるに ", post:"を たのしむ。", wrong1:["草","化","茶"], wrong2:["貝","買","目"] },
+  { w:"水玉", yomi:"みずたま", grade:1, pre:"", post:"もようの スカート。", wrong1:["氷","木","火"], wrong2:["王","金","主"] },
+  { w:"出口", yomi:"でぐち", grade:1, pre:"えきの ", post:"を さがす。", wrong1:["山","内","止"], wrong2:["日","目","回"] },
+  { w:"入口", yomi:"いりぐち", grade:1, pre:"たてものの ", post:"から はいる。", wrong1:["人","八","大"], wrong2:["田","石","四"] },
+  { w:"目玉", yomi:"めだま", grade:1, pre:"", post:"やきを つくる。", wrong1:["日","自","耳"], wrong2:["王","金","主"] },
+  { w:"竹林", yomi:"ちくりん", grade:1, pre:"しずかな ", post:"を あるく。", wrong1:["木","森","村"], wrong2:["休","体","校"] },
+  { w:"空中", yomi:"くうちゅう", grade:1, pre:"ボールが ", post:"で とまる。", wrong1:["雲","室","立"], wrong2:["申","虫","由"] },
+  { w:"上手", yomi:"じょうず", grade:1, pre:"うたが ", post:"だ。", wrong1:["下","土","止"], wrong2:["毛","才","午"] },
+  { w:"学年", yomi:"がくねん", grade:1, pre:"おなじ ", post:"の ともだち。", wrong1:["字","科","業"], wrong2:["午","牛","毛"] },
+  { w:"手足", yomi:"てあし", grade:1, pre:"", post:"を のばして たいそうする。", wrong1:["毛","才","午"], wrong2:["走","定","星"] },
+  { w:"王子", yomi:"おうじ", grade:1, pre:"おはなしの ", post:"さま。", wrong1:["玉","主","全"], wrong2:["字","学","予"] },
+  { w:"男子", yomi:"だんし", grade:1, pre:"", post:"と じょしが ならぶ。", wrong1:["女","田","力"], wrong2:["字","学","予"] },
+  { w:"金魚", yomi:"きんぎょ", grade:2, pre:"", post:"が すいそうで およぐ。", wrong1:["全","銀","王"], wrong2:["鳥","馬","肉"] },
+  { w:"汽車", yomi:"きしゃ", grade:2, pre:"", post:"が けむりを はく。", wrong1:["気","泳","池"], wrong2:["東","事","直"] },
+  { w:"何回", yomi:"なんかい", grade:2, pre:"", post:"も れんしゅうする。", wrong1:["荷","作","行"], wrong2:["国","画","図"] },
+  { w:"毎日", yomi:"まいにち", grade:2, pre:"", post:"はやく おきる。", wrong1:["海","母","毛"], wrong2:["目","白","月"] },
+  { w:"東京", yomi:"とうきょう", grade:2, pre:"", post:"へ しゅうがくりょこうに いく。", wrong1:["車","事","直"], wrong2:["高","原","方"] },
+  { w:"星空", yomi:"ほしぞら", grade:2, pre:"きれいな ", post:"を ながめる。", wrong1:["早","里","晴"], wrong2:["雲","室","立"] },
+  { w:"朝食", yomi:"ちょうしょく", grade:2, pre:"", post:"を しっかり たべる。", wrong1:["昼","晴","明"], wrong2:["飲","館","全"] },
+  { w:"音読", yomi:"おんどく", grade:2, pre:"きょうかしょを ", post:"する。", wrong1:["立","言","首"], wrong2:["語","話","記"] },
+  { w:"中止", yomi:"ちゅうし", grade:2, pre:"あめで うんどうかいが ", post:"に なる。", wrong1:["申","虫","由"], wrong2:["正","上","山"] },
+  { w:"台風", yomi:"たいふう", grade:2, pre:"", post:"が ちかづく。", wrong1:["合","右","石"], wrong2:["雨","雲","鳴"] },
+  { w:"昼夜", yomi:"ちゅうや", grade:2, pre:"", post:"を とおして あかりが つく。", wrong1:["朝","書","春"], wrong2:["夕","外","多"] },
+  { w:"少女", yomi:"しょうじょ", grade:2, pre:"ものがたりの ", post:"が わらう。", wrong1:["小","水","消"], wrong2:["男","安","母"] },
+  { w:"太陽", yomi:"たいよう", grade:3, pre:"", post:"が のぼる。", wrong1:["大","犬","天"], wrong2:["場","湯","院"] },
+  { w:"銀行", yomi:"ぎんこう", grade:3, pre:"", post:"で おかねを あずける。", wrong1:["金","鉄","根"], wrong2:["役","待","他"] },
+  { w:"病気", yomi:"びょうき", grade:3, pre:"", post:"が よく なる。", wrong1:["医","度","部"], wrong2:["汽","元","天"] },
+  { w:"屋上", yomi:"おくじょう", grade:3, pre:"", post:"から まちを みる。", wrong1:["室","局","広"], wrong2:["下","土","止"] },
+  { w:"苦手", yomi:"にがて", grade:3, pre:"さんすうが ", post:"だ。", wrong1:["草","昔","者"], wrong2:["毛","才","午"] },
+  { w:"発表", yomi:"はっぴょう", grade:3, pre:"みんなの まえで ", post:"する。", wrong1:["登","反","皮"], wrong2:["美","着","羊"] },
+  { w:"幸福", yomi:"こうふく", grade:3, pre:"", post:"な まいにち。", wrong1:["平","半","羊"], wrong2:["服","神","礼"] },
+  { w:"速度", yomi:"そくど", grade:3, pre:"くるまの ", post:"を おとす。", wrong1:["遠","通","送"], wrong2:["庭","広","店"] },
+  { w:"世界", yomi:"せかい", grade:3, pre:"", post:"じゅうの ひとと はなす。", wrong1:["申","由","田"], wrong2:["男","思","畑"] },
+  { w:"神社", yomi:"じんじゃ", grade:3, pre:"", post:"に おまいりする。", wrong1:["申","福","礼"], wrong2:["科","秋","和"] },
+  { w:"農家", yomi:"のうか", grade:3, pre:"", post:"の しごとを てつだう。", wrong1:["曲","黒","重"], wrong2:["室","安","宿"] },
+  { w:"予定", yomi:"よてい", grade:3, pre:"あしたの ", post:"を きめる。", wrong1:["野","里","子"], wrong2:["庭","実","安"] }
 ];
 /* ごほうびカード（5スタンプで1まい） */
 const REWARDS = [
@@ -962,6 +1126,8 @@ const unlockedCount = () => Math.min(REWARDS.length, Math.floor(DB.stamps / 5));
    ============================================================ */
 const shuffle = a => { const b=a.slice(); for(let i=b.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [b[i],b[j]]=[b[j],b[i]]; } return b; };
 
+const REVIEW_MAX = 4;   // 1セット10問のうち「まちがえた もんだい」を入れる上限
+
 function pickSet(list, stats, keyOf, size){
   const wrongPool = [], freshPool = [], normalPool = [], masteredPool = [];
   for(const q of list){
@@ -974,10 +1140,18 @@ function pickSet(list, stats, keyOf, size){
   wrongPool.sort((a,b) => (stats[keyOf(b)].wrong - stats[keyOf(a)].wrong)
                        || (stats[keyOf(b)].lastWrong - stats[keyOf(a)].lastWrong));
   const picked = [];
-  const take = arr => { for(const q of arr){ if(picked.length >= size) return; picked.push(q); } };
-  take(wrongPool);                       // まちがえた もんだいを さいゆうせん
+  const take = (arr, max) => {
+    for(const q of arr){
+      if(picked.length >= size) return;
+      if(max !== undefined && picked.length >= max) return;
+      picked.push(q);
+    }
+  };
+  // まちがえた もんだいは 10問のうち 4問までにして、のこりは たくさんの中から ランダムに出す
+  take(wrongPool, Math.min(size, REVIEW_MAX));
   take(shuffle(freshPool));
   take(shuffle(normalPool));
+  take(wrongPool);                       // それでも たりなければ 復習を さらに入れる
   take(shuffle(masteredPool));           // それでも たりなければ クリアずみも もどす
   return shuffle(picked);
 }
