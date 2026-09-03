@@ -281,9 +281,8 @@ body{
 }
 .q-sentence{
   font-size: clamp(1.25rem, 5.6vw, 1.6rem);
-  /* よみがなバッジが わくの うえに 出るので、行間と 上の よはくを ひろげる */
-  font-weight: 700; line-height: 3.1; margin: 0;
-  padding-top: 12px;
+  /* よみがなは 行の 中に 入るので、行間を むりに ひろげる ひつようは ない */
+  font-weight: 700; line-height: 2.3; margin: 0;
   text-wrap: balance;
 }
 .q-sentence ruby rt{ font-size: .62em; font-weight: 700; color: var(--ink-soft); }
@@ -312,7 +311,9 @@ body{
 .blank{
   display: inline-grid; place-items: center;
   width: 2.1em; height: 2.1em;
-  vertical-align: -.62em;
+  /* 文の line-height を つぐと ？の 行ボックスが わくより 高くなり
+     天地中央に ならない。1 に して わくの まんなかに おく */
+  line-height: 1;
   margin: 0 .12em;
   border-radius: 16px;
   background: var(--pink-soft);
@@ -326,15 +327,19 @@ body{
   0%,100%{ transform: scale(1); }
   50%    { transform: scale(1.06); }
 }
-.blank .yomi{
-  /* bottom:100% で「わくの うえ」に かならず 出す（かぶらない）
-     line-height を 1.2 に もどさないと 文の 2.7 を ついで 箱が たてに のびる */
-  position: absolute; bottom: calc(100% + 12px); left: 50%; transform: translateX(-50%);
+/* よみがな＋わく を たてに ならべた ひとかたまり。
+   position:absolute で うかせると 行の たかさに かぞえられず 上の行に かぶるので、
+   flex の 列に して 行の 中に 実体として おく（行が じどうで 高くなる） */
+.blankwrap{
+  display: inline-flex; flex-direction: column; align-items: center;
+  gap: 7px; vertical-align: middle; margin: 0 .18em;
+}
+.brow{ display: inline-flex; gap: .12em; }
+.blankwrap .yomi{
   font-family: var(--f-body); font-weight: 900; line-height: 1.2;
   font-size: .62em; white-space: nowrap; color: var(--mint-deep);
   background: var(--mint-soft); padding: 4px 13px; border-radius: 999px;
   box-shadow: 0 2px 0 rgba(63,174,147,.18);
-  z-index: 1;
 }
 .blank.done{
   background: var(--mint-soft); border: 3px solid var(--mint); color: var(--mint-deep);
@@ -488,20 +493,8 @@ body{
 .btn.test:active{ box-shadow: 0 2px 0 var(--lav-deep); }
 .btn.test .lv-tag{ opacity: .95; }
 
-/* ---------- じゅくごの 2マス ---------- */
-.pairwrap{
-  position: relative; display: inline-flex; gap: .12em;
-  vertical-align: -.62em; margin: 0 .14em;
-}
-.pairwrap .blank{ vertical-align: 0; margin: 0; }
-.pair-yomi{
-  position: absolute; bottom: calc(100% + 12px); left: 50%; transform: translateX(-50%);
-  font-family: var(--f-body); font-weight: 900; line-height: 1.2;
-  font-size: .62em; white-space: nowrap; color: var(--mint-deep);
-  background: var(--mint-soft); padding: 4px 13px; border-radius: 999px;
-  box-shadow: 0 2px 0 rgba(63,174,147,.18);
-  z-index: 1;
-}
+/* ---------- じゅくごの 2マス（レベル1の 1マスと おなじ しくみ） ---------- */
+.brow .blank{ margin: 0; }
 .blank.waiting{
   background: var(--milk-deep); border: 3px dashed var(--line);
   color: var(--ink-soft); animation: none;
@@ -1461,7 +1454,8 @@ function renderQuestion(){
     $("#q-label").textContent = "□に はいる かんじは？";
     $("#q-sentence").innerHTML =
       q.pre +
-      `<span class="blank" id="blank"><span class="yomi">${q.yomi}</span>?</span>` +
+      `<span class="blankwrap"><span class="yomi">${q.yomi}</span>` +
+      `<span class="brow"><span class="blank" id="blank">?</span></span></span>` +
       q.post;
     renderChoices(q.k, [q.k, ...q.wrong], q);
   }else{
@@ -1469,9 +1463,9 @@ function renderQuestion(){
     subIdx = 0; subResult = new Array(n).fill(null);
     $("#q-sentence").innerHTML =
       q.pre +
-      `<span class="pairwrap"><span class="pair-yomi">${q.yomi}</span>` +
+      `<span class="blankwrap"><span class="yomi">${q.yomi}</span><span class="brow">` +
       Array.from({ length: n }, (_, i) => `<span class="blank" id="b${i}">?</span>`).join("") +
-      `</span>` +
+      `</span></span>` +
       q.post;
     renderSub(q);
   }
@@ -1543,7 +1537,7 @@ function answer(btn, choice, q, target){
   if(LEVEL === 1){
     recordChar(q.k, ok, q);
     const blank = $("#blank");
-    blank.innerHTML = `<span class="yomi">${q.yomi}</span>${q.k}`;
+    blank.textContent = q.k;   // よみがなは わくの そと（.blankwrap）に あるので さわらない
     blank.classList.add(ok ? "done" : "miss");
     if(ok) correctCount++;
     ok ? seCorrect() : seWrong();
