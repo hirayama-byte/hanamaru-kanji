@@ -281,14 +281,16 @@ body{
 }
 .q-sentence{
   font-size: clamp(1.25rem, 5.6vw, 1.6rem);
-  font-weight: 700; line-height: 2.7; margin: 0;
+  /* よみがなバッジが わくの うえに 出るので、行間と 上の よはくを ひろげる */
+  font-weight: 700; line-height: 3.1; margin: 0;
+  padding-top: 12px;
   text-wrap: balance;
 }
-.q-sentence ruby rt{ font-size: .45em; font-weight: 500; color: var(--ink-soft); }
+.q-sentence ruby rt{ font-size: .62em; font-weight: 700; color: var(--ink-soft); }
 
 .q-sentence ruby{ ruby-position: over; }
 .q-sentence.no-furigana rt{ visibility: hidden; }
-.pr-ex ruby rt{ font-size: .5em; font-weight: 500; color: var(--ink-soft); }
+.pr-ex ruby rt{ font-size: .72em; font-weight: 700; color: var(--ink-soft); }
 
 /* ふりがなの表示切り替え */
 .ruby-toggle{
@@ -325,11 +327,14 @@ body{
   50%    { transform: scale(1.06); }
 }
 .blank .yomi{
-  position: absolute; top: -1.05em; left: 50%; transform: translateX(-50%);
-  font-family: var(--f-body); font-weight: 900;
-  font-size: .44em; white-space: nowrap; color: var(--mint-deep);
-  background: var(--mint-soft); padding: 3px 11px; border-radius: 999px;
+  /* bottom:100% で「わくの うえ」に かならず 出す（かぶらない）
+     line-height を 1.2 に もどさないと 文の 2.7 を ついで 箱が たてに のびる */
+  position: absolute; bottom: calc(100% + 12px); left: 50%; transform: translateX(-50%);
+  font-family: var(--f-body); font-weight: 900; line-height: 1.2;
+  font-size: .62em; white-space: nowrap; color: var(--mint-deep);
+  background: var(--mint-soft); padding: 4px 13px; border-radius: 999px;
   box-shadow: 0 2px 0 rgba(63,174,147,.18);
+  z-index: 1;
 }
 .blank.done{
   background: var(--mint-soft); border: 3px solid var(--mint); color: var(--mint-deep);
@@ -490,10 +495,10 @@ body{
 }
 .pairwrap .blank{ vertical-align: 0; margin: 0; }
 .pair-yomi{
-  position: absolute; top: -1.05em; left: 50%; transform: translateX(-50%);
-  font-family: var(--f-body); font-weight: 900;
-  font-size: .44em; white-space: nowrap; color: var(--mint-deep);
-  background: var(--mint-soft); padding: 3px 11px; border-radius: 999px;
+  position: absolute; bottom: calc(100% + 12px); left: 50%; transform: translateX(-50%);
+  font-family: var(--f-body); font-weight: 900; line-height: 1.2;
+  font-size: .62em; white-space: nowrap; color: var(--mint-deep);
+  background: var(--mint-soft); padding: 4px 13px; border-radius: 999px;
   box-shadow: 0 2px 0 rgba(63,174,147,.18);
   z-index: 1;
 }
@@ -621,7 +626,7 @@ body{
   display: inline-block; background: var(--mint-soft); color: var(--mint-deep);
   font-weight: 900; font-size: .82rem; padding: 5px 14px; border-radius: 999px;
 }
-.pr-ex{ margin: 8px 0 0; font-size: .88rem; font-weight: 700; color: var(--ink-soft); }
+.pr-ex{ margin: 10px 0 0; font-size: 1.02rem; font-weight: 700; color: var(--ink-soft); line-height: 2; }
 
 /* ---------- ごほうびカード ---------- */
 .gallery{ display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -1171,7 +1176,10 @@ const JUKUGO = [
 
 /* ============================================================
    1-3. テストべんきょう
-        直近の かんじテストで まちがえた じゅくご。
+        直近の かんじテストで まちがえた ことば。
+        w は 1もじ でも 2もじ でも OK。
+          2もじ … wrong1（1もじめ）と wrong2（2もじめ）の りょうほうを かく
+          1もじ … wrong1 だけ かく（おくりがなは post に かく）
         べんきょうする もんだいを ふやすときは この はいれつに たすだけ。
    ============================================================ */
 const TEST = [
@@ -1184,7 +1192,33 @@ const TEST = [
   { w:"次回", yomi:"じかい", grade:3, pre:"", post:"の やくそくを きめる。", wrong1:["氷","水","写"], wrong2:["国","園","図"] },
   { w:"十秒", yomi:"じゅうびょう", grade:3, pre:"あと ", post:"で スタートする。", wrong1:["千","土","王"], wrong2:["秋","科","和"] },
   { w:"鉄道", yomi:"てつどう", grade:3, pre:"", post:"の もけいを あつめる。", wrong1:["銀","金","矢"], wrong2:["通","週","遠"] },
-  { w:"練習", yomi:"れんしゅう", grade:3, pre:"まいにち ピアノを ", post:"する。", wrong1:["緑","線","紙"], wrong2:["集","週","者"] }
+  { w:"練習", yomi:"れんしゅう", grade:3, pre:"まいにち ピアノを ", post:"する。", wrong1:["緑","線","紙"], wrong2:["集","週","者"] },
+
+  /* --- 2026-09-03 ついか：かんじテストの もんだい --- */
+  { w:"仕組", yomi:"しく", grade:3, pre:"きかいの ", post:"みを しらべる。", wrong1:["他","代","住"], wrong2:["級","線","終"] },
+  { w:"気味", yomi:"ぎみ", grade:3, pre:"かぜ", post:"だから はやく ねる。", wrong1:["汽","元","天"], wrong2:["妹","品","号"] },
+  { w:"感想", yomi:"かんそう", grade:3, pre:"よんだ ほんの ", post:"を はっぴょうする。", wrong1:["意","悲","急"], wrong2:["相","思","息"] },
+  { w:"問題", yomi:"もんだい", grade:3, pre:"むずかしい ", post:"に ちょうせんする。", wrong1:["間","聞","開"], wrong2:["顔","頭","起"] },
+  { w:"反対", yomi:"はんたい", grade:3, pre:"いけんが ", post:"に わかれる。", wrong1:["友","板","皮"], wrong2:["村","待","時"] },
+  { w:"道路", yomi:"どうろ", grade:3, pre:"", post:"を わたる ときは きを つける。", wrong1:["通","送","週"], wrong2:["足","客","定"] },
+  { w:"全部", yomi:"ぜんぶ", grade:3, pre:"おかしを ", post:" たべた。", wrong1:["金","会","王"], wrong2:["都","陽","院"] },
+  { w:"着席", yomi:"ちゃくせき", grade:3, pre:"ベルが なったら ", post:"する。", wrong1:["者","羊","美"], wrong2:["度","庭","店"] },
+  { w:"登校", yomi:"とうこう", grade:3, pre:"あさ はやく ", post:"する。", wrong1:["発","豆","等"], wrong2:["交","木","村"] },
+  { w:"助手", yomi:"じょしゅ", grade:3, pre:"はかせの ", post:"に なる。", wrong1:["動","勉","役"], wrong2:["毛","才","午"] },
+  { w:"洋風", yomi:"ようふう", grade:3, pre:"", post:"の たてものが ならぶ。", wrong1:["羊","様","注"], wrong2:["雨","雲","鳴"] },
+  { w:"地区", yomi:"ちく", grade:3, pre:"この ", post:"には こうえんが おおい。", wrong1:["池","他","場"], wrong2:["医","号","品"] },
+  { w:"悲鳴", yomi:"ひめい", grade:3, pre:"おばけやしきで ", post:"を あげる。", wrong1:["美","意","息"], wrong2:["鳥","島","馬"] },
+  { w:"様子", yomi:"ようす", grade:3, pre:"そとの ", post:"を まどから みる。", wrong1:["洋","羊","業"], wrong2:["字","学","予"] },
+  { w:"夏休", yomi:"なつやす", grade:2, pre:"", post:"みに キャンプへ いく。", wrong1:["春","秋","冬"], wrong2:["体","林","作"] },
+  { w:"速", yomi:"はや", grade:3, pre:"", post:"い でんしゃに のる。", wrong1:["東","通","遠"] },
+  { w:"動", yomi:"うご", grade:3, pre:"ロボットが ", post:"く。", wrong1:["重","助","勉"] },
+  { w:"向", yomi:"む", grade:3, pre:"えきに ", post:"かって あるく。", wrong1:["同","回","内"] },
+  { w:"送", yomi:"おく", grade:3, pre:"にもつを ", post:"る。", wrong1:["通","道","週"] },
+  { w:"整", yomi:"ととの", grade:3, pre:"つくえの うえを ", post:"える。", wrong1:["正","数","調"] },
+  { w:"青", yomi:"あお", grade:1, pre:"", post:"い うみが ひろがる。", wrong1:["晴","赤","星"] },
+  { w:"海", yomi:"うみ", grade:2, pre:"なつの ", post:"で およぐ。", wrong1:["毎","母","湖"] },
+  { w:"船", yomi:"ふね", grade:2, pre:"みなとに ", post:"が とまる。", wrong1:["車","橋","島"] },
+  { w:"雲", yomi:"くも", grade:2, pre:"そらに しろい ", post:"が うかぶ。", wrong1:["雪","電","雨"] }
 ];
 /* ごほうびカード（5スタンプで1まい） */
 const REWARDS = [
@@ -1431,11 +1465,13 @@ function renderQuestion(){
       q.post;
     renderChoices(q.k, [q.k, ...q.wrong], q);
   }else{
-    subIdx = 0; subResult = [null, null];
+    const n = q.w.length;
+    subIdx = 0; subResult = new Array(n).fill(null);
     $("#q-sentence").innerHTML =
       q.pre +
       `<span class="pairwrap"><span class="pair-yomi">${q.yomi}</span>` +
-      `<span class="blank" id="b0">?</span><span class="blank" id="b1">?</span></span>` +
+      Array.from({ length: n }, (_, i) => `<span class="blank" id="b${i}">?</span>`).join("") +
+      `</span>` +
       q.post;
     renderSub(q);
   }
@@ -1445,8 +1481,11 @@ function renderQuestion(){
 
 /* レベル2: いま きいている ほうの マスを ひからせる */
 function renderSub(q){
-  $("#q-label").textContent = subIdx === 0 ? "1つめの かんじは？" : "2つめの かんじは？";
-  for(let i = 0; i < 2; i++){
+  const n = q.w.length;
+  $("#q-label").textContent =
+    n === 1        ? "□に はいる かんじは？" :
+    subIdx === 0   ? "1つめの かんじは？" : "2つめの かんじは？";
+  for(let i = 0; i < n; i++){
     const el = $("#b" + i);
     if(subResult[i] === null) el.classList.toggle("waiting", subIdx !== i);
     else                      el.classList.remove("waiting");
@@ -1527,12 +1566,12 @@ function answer(btn, choice, q, target){
   ok ? seCorrect() : seWrong();
   save();
 
-  if(subIdx === 0){
-    setTimeout(() => { subIdx = 1; renderSub(q); }, ok ? 800 : 1300);
+  if(subIdx < q.w.length - 1){
+    setTimeout(() => { subIdx++; renderSub(q); }, ok ? 800 : 1300);
     return;
   }
 
-  const both = subResult[0] && subResult[1];
+  const both = subResult.every(Boolean);
   const ws = wstatOf(q.w);
   ws.seen++;
   if(both){
@@ -1786,7 +1825,7 @@ function applyRange(){
   $$("#range-pills .range-pill").forEach(b => b.classList.toggle("on", b.dataset.g === g));
   const n1 = QUESTIONS.filter(inRange).length;
   const n2 = JUKUGO.filter(inRange).length;
-  $("#range-note").innerHTML = `レベル1 <b>${n1}</b>もん ／ レベル2 <b>${n2}</b>もん<br><span style="font-size:.92em">テストべんきょうは はんいに かんけいなく <b>${TEST.length}</b>もん</span>`;
+  $("#range-note").innerHTML = `レベル1 <b>${n1}</b>もん ／ レベル2 <b>${n2}</b>もん<br><span style="font-size:.92em">テストべんきょうは はんいに かんけいなく ぜんぶで <b>${TEST.length}</b>もん（1かいに 10もん）</span>`;
 }
 
 /* ふりがなの表示切り替え（よめるように なったら けして よむ れんしゅう） */
